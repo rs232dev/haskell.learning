@@ -22,6 +22,12 @@ import Utils.Start
     -- commons
     
     stack build intero
+    cabal update
+    cabal install hlint
+
+    export PATH=/home/corrado/.cabal/bin/:/home/corrado/.local/bin:......
+
+
     
     --}
 
