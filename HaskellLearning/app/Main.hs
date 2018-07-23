@@ -3,6 +3,7 @@ module Main where
 import Lib
 import Utils.Myutils
 import Utils.Start
+import GH_course
         
     {-- 
     
@@ -36,6 +37,25 @@ main = do
 {
     putStrLn ("haskell main "++  show(square 3));
     putStrLn "haskell main";
+
+    putStrLn ("gh sum list of integers:" ++  show (fsum  [1..5]) );
+    putStrLn ("gh sum list of integers:" ++  show (fsum' [1..5]) );
+    putStrLn ("gh sum list of floats  :" ++  show (fsum [1.0,2.1,3,4.7]) );
+
+    putStrLn ("gh sort a list     :" ++  show (fqsort [3,5,1,4,2]) );
+    putStrLn ("gh sort a list rev :" ++  show (reverse(fqsort [3,5,1,4,2]) ));
+
+    putStrLn ("gh head of a list  :" ++  show (head [3,5,1,4,2]) );
+    putStrLn ("gh tail of a list  :" ++  show (tail [3,5,1,4,2]) );
+    putStrLn ("gh nth  of a list  :" ++  show ([3,5,1,4,2] !! 2 ) );
+    
+    putStrLn ("gh select the first n elements of a list  :" ++  show ( take 3 [3,5,1,4,2] ) );
+    putStrLn ("gh remove the firts n elements of a list  :" ++  show ( drop 3 [3,5,1,4,2] ) );
+    putStrLn ("gh sum elements of a list  :"     ++  show ( sum [3,5,1,4,2] ) );
+    putStrLn ("gh product elements of a list  :" ++  show ( product [3,5,1,4,2] ) );
+    putStrLn ("gh length of a list  :" ++  show ( length [3,5,1,4,2] ) );
+    putStrLn ("gh append two lists  :" ++  show ( [1,2,3] ++ [4,5] ) );
+
         
             {--
             putStrLn "haskell main";
