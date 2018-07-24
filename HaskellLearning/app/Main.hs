@@ -70,6 +70,11 @@ main = do
     -- defining function
     putStrLn ("abs :" ++  show ( GH_course.abs (-4)));
 
+
+    -- lambda function
+    putStrLn ("add'' :" ++  show ( GH_course.add'' 2 5));
+    putStrLn ("odd'' :" ++  show ( GH_course.odd  10));
+
             {--
             putStrLn "haskell main";
             putStrLn ("square 5:" ++ show(square 5));
