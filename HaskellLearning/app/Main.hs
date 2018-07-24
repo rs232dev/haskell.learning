@@ -51,12 +51,25 @@ main = do
     
     putStrLn ("gh select the first n elements of a list  :" ++  show ( take 3 [3,5,1,4,2] ) );
     putStrLn ("gh remove the firts n elements of a list  :" ++  show ( drop 3 [3,5,1,4,2] ) );
+    
     putStrLn ("gh sum elements of a list  :"     ++  show ( sum [3,5,1,4,2] ) );
     putStrLn ("gh product elements of a list  :" ++  show ( product [3,5,1,4,2] ) );
+
     putStrLn ("gh length of a list  :" ++  show ( length [3,5,1,4,2] ) );
     putStrLn ("gh append two lists  :" ++  show ( [1,2,3] ++ [4,5] ) );
 
+    putStrLn ("gh nth  of a infinite list  :" ++  show (take 5 [1..]) );
+
+    -- Tuples
+    putStrLn ("add 2 tuple element :" ++  show (tuples_add (4,3)) );
+
+    -- curried function
+    putStrLn ("add 2 tuple element :" ++  show ( (add' 3)5) );
+
         
+    -- defining function
+    putStrLn ("abs :" ++  show ( GH_course.abs (-4)));
+
             {--
             putStrLn "haskell main";
             putStrLn ("square 5:" ++ show(square 5));
