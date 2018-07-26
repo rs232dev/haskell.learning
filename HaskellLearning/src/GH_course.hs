@@ -377,7 +377,7 @@ safetail xs
 -- <- is read as drawn from
 -- and the expression <- [1..5] is called generator
 
-lc = [1^2 | x <- [1..5]] 
+lc = [x^2 | x <- [1..5]] 
 -- [1,4,9,16,25]
 
 -- -------------------------------------------------------------------------- --
@@ -529,8 +529,76 @@ insert x (y:ys)
 -- insert 3 [1,2,4,5]
 -- [1,2,3,4,5]
 
+-- ========================================================================== ==    
+--    __ ______    ____              __  _             
+--   / // / __ \  / __/_ _____  ____/ /_(_)__  ___  ___
+--  / _  / /_/ / / _// // / _ \/ __/ __/ / _ \/ _ \(_-<
+-- /_//_/\____/ /_/  \_,_/_//_/\__/\__/_/\___/_//_/___/
+-- 
+-- ========================================================================== ==      
+
+add_int :: Int -> Int -> Int
+add_int x y = x + y
+
+-- means
+
+add_int' :: Int -> (Int -> Int)
+add_int' = \x -> (\y -> x +y)
+
+-- and states that add_int is a function that takes an integer x and returns
+-- a function, which in turn take another integer y and returns their sum x + y.
 
 
+-- -------------------------------------------------------------------------- --
+-- In Haskell it also pemissible to define functions that take functions as   --
+-- arguments.                                                                 --
+-- -------------------------------------------------------------------------- --
+twice :: (a -> a) -> a -> a
+twice f x = f ( f x )
+
+-- example
+-- twice (*2) 2
+-- 8
+
+-- twice reverse [1,2,3]
+-- [1,2,3]
+
+
+-- -------------------------------------------------------------------------- --
+-- HOF processing lists                                                       --
+-- -------------------------------------------------------------------------- --
+
+-- > :t map
+-- map :: (a -> b) -> [a] -> [b]
+
+-- example
+-- map (*2) [1,2,3]
+-- [2,4,6]
+
+-- mymap
+mymap :: (a -> b) -> [a] -> [b]
+mymap f xs = [ f x | x <- xs]
+
+-- example
+-- mymap (+1) [10,11,12]
+-- [11,12,13]
+
+-- map is a polymorphic function that can be applied to lists of any type.
+-- map can be applied to itself to process nested lists
+-- 
+-- mymap (mymap (+1)) [ [1,2,3] , [4,7] ]
+-- [[2,3,4],[5,8]]
+
+-- step .1 applying the outer map
+-- [ mymap (+1) [1,2,3], mymap (+1) [4,7] ]
+
+-- applying the inner map
+-- [[2,3,4],[5,8]]
+
+-- finally the function map can also be defined using recursion
+mymap' :: (a->b) -> [a] -> [b]
+mymap' f []     = []
+mymap' f (x:xs) =  f x : mymap' f xs
 
 
 
