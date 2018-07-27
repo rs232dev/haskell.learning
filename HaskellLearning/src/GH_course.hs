@@ -958,3 +958,30 @@ newtype Nat = N Int
 -- \_,_/\__/\__/_/\_,_/_/  \_,_/\__/_/\___/_//_/___/                          --
 --                                                                            --
 -- -------------------------------------------------------------------------- -- 
+-- commented because is declared in the standard Prelude:
+--
+-- class Eq a where
+--    (==), (/==) :: a -> a -> Bool
+--
+-- x/= y = not (x == y) -- default declaration
+-- 
+-- This declarations states that for a type 'a' to be an instance of the class
+-- Eq, it must support equality and inequality operator of the specified type.
+--
+-- In fact, because a default definition has already been included for the /=
+-- operator, declaring an instance require  only requires a definition for the
+-- == operator .     
+-- example:
+--
+-- instance Eq Bool where
+--    False == False = False
+--    True  == True  = True
+--    _     == _     = False
+--
+-- NB: Only type that are declared using data and newtype mechanisms can be
+-- made into instances of classses.
+--
+-- Classes can also be extended to form new classes:
+-- -------------------------------------------------------------------------- -- 
+
+
