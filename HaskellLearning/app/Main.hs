@@ -52,8 +52,8 @@ main = do
     putStrLn ("gh select the first n elements of a list  :" ++  show ( take 3 [3,5,1,4,2] ) );
     putStrLn ("gh remove the firts n elements of a list  :" ++  show ( drop 3 [3,5,1,4,2] ) );
     
-    putStrLn ("gh sum elements of a list  :"     ++  show ( sum [3,5,1,4,2] ) );
-    putStrLn ("gh product elements of a list  :" ++  show ( product [3,5,1,4,2] ) );
+    putStrLn ("gh sum elements of a list  :"     ++  show ( GH_course.sum [3,5,1,4,2] ) );
+    putStrLn ("gh product elements of a list  :" ++  show ( GH_course.product [3,5,1,4,2] ) );
 
     putStrLn ("gh length of a list  :" ++  show ( length [3,5,1,4,2] ) );
     putStrLn ("gh append two lists  :" ++  show ( [1,2,3] ++ [4,5] ) );

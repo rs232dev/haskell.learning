@@ -817,3 +817,127 @@ decode = map (chr . bin2int) . chop8
 -- > decode [1,0,0,0,0,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0]
 -- "abc"
 
+
+-- ========================================================================== ==
+--                                                                            -- 
+--     ______                             __  _______                         --
+--    /_  __/_ _____  ___   ___ ____  ___/ / / ___/ /__ ____ ___ ___ ___      --
+--     / / / // / _ \/ -_) / _ `/ _ \/ _  / / /__/ / _ `(_-<(_-</ -_|_-<      --
+--    /_/  \_, / .__/\__/  \_,_/_//_/\_,_/  \___/_/\_,_/___/___/\__/___/      --
+--        /___/_/                                                             --
+--                                                                            --
+-- ========================================================================== ==
+
+-- -------------------------------------------------------------------------- --
+--     ______                ___          __              __  _               --
+--    /_  __/_ _____  ___   / _ \___ ____/ /__ ________ _/ /_(_)__  ___       --
+--     / / / // / _ \/ -_) / // / -_) __/ / _ `/ __/ _ `/ __/ / _ \/ _ \      --
+--    /_/  \_, / .__/\__/ /____/\__/\__/_/\_,_/_/  \_,_/\__/_/\___/_//_/      --
+--        /___/_/                                                             --
+--                                                                            --
+-- -------------------------------------------------------------------------- --
+-- create type synonym:                                                       --
+-- examples:                                                                  --
+type SString = [Char]
+type Pos     = (Int,Int)
+type Trans   = Pos -> Pos
+
+-- NB. Type declaration cannot be recursive.
+--  type Tree = (Int, [Tree]) error!
+
+-- type declarations can also be parametrised by other types:
+type Pair a = (a,a)
+
+-- type declarations with more than one parameter are possible too:
+type Assoc k v = [(k,v)]
+
+-- -------------------------------------------------------------------------- --
+--    ___       __         ___          __              __  _                 --
+--   / _ \___ _/ /____ _  / _ \___ ____/ /__ ________ _/ /_(_)__  ___         --
+--  / // / _ `/ __/ _ `/ / // / -_) __/ / _ `/ __/ _ `/ __/ / _ \/ _ \        --
+-- /____/\_,_/\__/\_,_/ /____/\__/\__/_/\_,_/_/  \_,_/\__/_/\___/_//_/        --
+--                                                                            --
+-- A complete new type, as opposed to a synonym for an existing type, can be  --
+-- declared by specifying its value using 'data' declaration                  --
+-- -------------------------------------------------------------------------- --
+
+--  type                   data
+-- constructor         constructors
+--    \                    \
+data MyBool     =   MyFalse | MyTrue
+
+--  type                   data
+-- constructor         constructors
+--    \                    \
+data MyType     =   Type1 | Type2
+
+data Move = North | South | East | West
+
+move :: Move -> Pos -> Pos
+move North (x,y) = (x,y+1)
+move South (x,y) = (x,y-1)
+move East (x,y)  = (x+1,y)
+move West (x,y)  = (x-1,y)
+
+-- The constructor in data declaration can also have arguments:
+data Shape = Circle Float |  Rect Float Float
+
+square :: Float -> Shape
+square n = Rect n n
+
+area :: Shape -> Float
+area (Circle r)  = pi * r^2
+area (Rect x y)  = x * y
+
+-- The Data constructor Rec and Circle are actually constructor functions, 
+-- which produce results of type Shape.
+--
+-- >:t Rect
+-- Rect :: Float -> Float -> Shape
+--
+-- :t Circle
+-- Circle :: Float -> Shape
+
+-- Data declaration themselves can also be parametrised:
+
+--data Maybe a = Nothing | Just a 
+-- the above deta declaration is commented to avoid ambigous occurrence
+
+safediv :: Int -> Int -> Maybe Int
+safediv  _ 0 = Nothing
+safediv  m n = Just (m `div` n)
+
+-- example
+-- > safediv 2 0
+-- Nothing
+
+-- > safediv 4 2
+-- Just 2
+
+safehead :: [a] -> Maybe a
+safehead [] = Nothing
+safehead xs = Just (head xs)
+
+-- example
+-- > safehead []
+-- Nothing
+
+-- > safehead [1,2,3]
+-- Just 1
+
+
+-- -------------------------------------------------------------------------- --
+--    _  __           __                                                      --
+--   / |/ /__ _    __/ /___ _____  ___                                        -- 
+--  /    / -_) |/|/ / __/ // / _ \/ -_)                                       --
+-- /_/|_/\__/|__,__/\__/\_, / .__/\__/                                        --
+--                     /___/_/                                                --
+--    ___          __              __  _                                      --
+--   / _ \___ ____/ /__ ________ _/ /_(_)__  ___                              --
+--  / // / -_) __/ / _ `/ __/ _ `/ __/ / _ \/ _ \                             --
+-- /____/\__/\__/_/\_,_/_/  \_,_/\__/_/\___/_//_/                             --
+--                                                                            -- 
+-- If a new type has a single constructor with a single arument, then it can  --
+-- also be declared using 'newtype' nechanism.                                --
+--                                                                            -- 
+-- -------------------------------------------------------------------------- --
