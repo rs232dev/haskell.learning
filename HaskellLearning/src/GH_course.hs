@@ -1,5 +1,7 @@
 module GH_course where 
 
+import Data.Char  -- functions on characters
+
 -- ========================================================================== ==    
 -- pag. 9 "a taste of haskell" 
 -- *Main> :t fsum
@@ -595,13 +597,223 @@ mymap f xs = [ f x | x <- xs]
 -- applying the inner map
 -- [[2,3,4],[5,8]]
 
--- finally the function map can also be defined using recursion
+-- -------------------------------------------------------------------------- --
+-- finally the function map can also be defined using recursion               --
+-- -------------------------------------------------------------------------- --
 mymap' :: (a->b) -> [a] -> [b]
 mymap' f []     = []
 mymap' f (x:xs) =  f x : mymap' f xs
 
+-- -------------------------------------------------------------------------- --
+-- hof 'filter' by list comprehension                                         --
+-- -------------------------------------------------------------------------- --
+filter :: (a -> Bool) -> [a] -> [a]
+filter p xs = [x | x <- xs, p x]
+
+-- example
+-- GH_course.filter even [1,12,4,21]
+-- [12,4]
+
+-- -------------------------------------------------------------------------- --
+-- hof all/any                                                                --
+-- -------------------------------------------------------------------------- --
+
+-- > :t any
+-- any :: Foldable t => (a -> Bool) -> t a -> Bool
+--any even [1,12,4,21]
+--True
+
+-- > :t all
+-- all :: Foldable t => (a -> Bool) -> t a -> Bool
+-- all even [1,12,4,21]
+-- False
+
+-- -------------------------------------------------------------------------- --
+-- hof 'foldr'                                                                --
+--                                                                            --
+-- The HOF foldr (abbreviation fold right) encapsulates the following pattern --
+-- of recursion for defining functions on lists. See next examples:           -- 
+-- -------------------------------------------------------------------------- --
+--
+-- > :t foldr
+-- foldr :: Foldable t => (a -> b -> b) -> b -> t a -> b
+--                             |           |      \    \_result  
+--                       binary function   start   \
+--                                        element   \_list
+-- sum []     = 0
+-- sum (x:xs) = x + sum xs
+--
+-- product []     = 1
+-- product (x:xs) = x * product xs
+--
+-- or []     = False
+-- or (x:xs) = x || or xs
+--
+-- and []     = True
+-- and (x:xs) = x && and xs
+
+-- now rewrite the above function by HOF foldr 
+
+sum :: Num a => [a] -> a
+sum = foldr (+) 0
+
+-- example
+-- GH_course.sum [0,1,2,3,4,5,6,7,8,9]
+-- 45
+
+product :: Num a => [a] -> a
+product = foldr (*) 1
+
+-- example
+-- GH_course.product [3,7,2]
+-- 42
+
+or :: [Bool] -> Bool
+or = foldr (||) False
+
+-- example
+-- GH_course.or [True,False,False]
+-- True
+
+and :: [Bool] -> Bool
+and = foldr (Prelude.&&) True
+
+-- example
+-- GH_course.and [True,False,False]
+-- False
 
 
+-- -------------------------------------------------------------------------- --
+-- hof 'foldl'                                                                --
+--                                                                            --
+-- Function on list using an operator that is assumed to associates to the    --
+-- left.                                                                      -- 
+-- -------------------------------------------------------------------------- --
+--
+-- > :t foldl
+-- foldl :: Foldable t => (b -> a -> b) -> b -> t a -> b
+--                             |           |      \    \_result  
+--                       binary function   start   \
+--                                        element   \_list
 
 
+-- ========================================================================== ==      
+--             ____                    __                                     --
+--            / __ \___  ___ _______ _/ /____  ____                           --
+--     _     / /_/ / _ \/ -_) __/ _ `/ __/ _ \/ __/                           --
+--    (_)    \____/ .__/\__/_/  \_,_/\__/\___/_/                              --
+-- composition   /_/                                                          --
+--                                                                            --
+-- The HOF . operator returns the composition of two functions as a single    --
+-- function.                                                                  -- 
+-- ========================================================================== ==
+--                                                                            --
+-- > :t (.)                                                                   --
+-- (.) :: (b -> c) -> (a -> b) -> a -> c                                      --
+--                                                                            --
+-- f . g = \x -> f (g x)                                                      --
+--                                                                            --
+-- example                                                                    --
+-- comp = Prelude.sum . map (+1)                                              --
+-- comp [1,2,3]                                                               --
+-- 9                                                                          --
+--                                                                            --
+-- The composition operator is associative:                                   --
+--                                                                            -- 
+-- f . (g . h) = (f .g) . h   for any function f,g,h                          --
+--                                                                            --
+-- Composition also has an identity, given by the identity function:          --
+--                                                                            --
+-- id :: a -> a                                                               --
+-- id = \x -> x                                                               --
+--                                                                            --
+-- The identity function simply returns its argument unchanged, and has       --
+-- the property that:                                                         --
+--                                                                            --
+--  id . f = f                                                                --
+--                                                                            --
+--  and                                                                       --
+--                                                                            --
+--  f . id = f                                                                --
+--                                                                            --
+-- for any function f.                                                        --
+--                                                                            --
+-- The identity function provides a suitable starting point  for a sequence   --
+-- of compositions.                                                           --
+-- -------------------------------------------------------------------------- --
+
+
+-- Exercise: Binary String Transmitter
+-- synonym declaration for the type integers:
+type Bit = Int
+
+-- a binary number, represented as a list of bits, can converted in to an 
+-- integer by simply evaluating the appropriate weighted sum:
+bin2int :: [Bit] -> Int
+bin2int bits = Prelude.sum [ w * b | (w,b) <- zip weight bits]
+                       where weight = iterate (*2) 1
+
+-- The HOF iterate produces an infinite list by applying a function an
+-- increasing number of times to a value
+-- iterate f x == [x, f x, f (f x), ...]
+-- so the generator <- zip weight bits makes:
+--
+-- [(1,1),(2,0),(4,1)]
+--
+--               lsb   msb
+-- then > bin2int [1,1,0]
+-- 3
+
+int2bin :: Int -> [Bit]
+int2bin 0 = []
+int2bin n = n `mod` 2 : int2bin (n `div` 2)
+
+-- example
+-- > int2bin 8
+-- [0,0,0,1]
+
+make8 :: [Bit] -> [Bit]
+make8 bits = take 8 (bits ++ repeat 0)
+
+-- take n, applied to a list xs, returns the prefix of xs of length n, 
+-- or xs itself if n > length xs:
+-- take 5 "Hello World!" == "Hello"
+--
+-- repeat x is an infinite list, with x the value of every element.
+-- The library function repeat:: a -> [a] produce an infinite list of 
+-- copy of a value, but lazy evaluation ensure that only as many elements
+-- as required by the context will actually be produced.    
+--
+-- example:
+-- > make8 [1,0,1]
+-- [1,0,1,0,0,0,0,0]
+
+-- We can now define a function that encodes a string of characters as
+-- a list of bits converting each character into a Unicode number,
+-- converting each such number into an eight-bit binary number.
+-- > :t ord
+-- ord :: Char -> Int
+encode :: String -> [Bit]
+encode = Prelude.concat . map (make8 . int2bin .ord)
+
+-- example
+-- encode "abc"
+-- [1,0,0,0,0,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0]
+
+-- decode a list of bits
+
+chop8 :: [Bit] -> [[Bit]]
+chop8 []   = []
+chop8 bits = take 8 bits : chop8 (drop 8 bits)
+--
+-- example:
+-- > chop8 [1,0,0,0,0,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0]
+--   [[1,0,0,0,0,1,1,0],[0,1,0,0,0,1,1,0],[1,1,0,0,0,1,1,0]]
+
+decode :: [Bit] -> String
+decode = map (chr . bin2int) . chop8
+--
+-- example 
+-- > decode [1,0,0,0,0,1,1,0,0,1,0,0,0,1,1,0,1,1,0,0,0,1,1,0]
+-- "abc"
 
