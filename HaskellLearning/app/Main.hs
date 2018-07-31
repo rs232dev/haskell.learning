@@ -35,7 +35,7 @@ import GH_course
 main :: IO()      
 main = do
 {
-    putStrLn ("haskell main "++  show(square 3));
+    -- putStrLn ("haskell main "++  show(square 3));
     putStrLn "haskell main";
 
     putStrLn ("gh sum list of integers:" ++  show (fsum  [1..5]) );
