@@ -4,6 +4,8 @@ import Lib
 import Utils.Myutils
 import Utils.Start
 import GH_course
+
+
         
     {-- 
     
@@ -28,14 +30,13 @@ import GH_course
 
     export PATH=/home/corrado/.cabal/bin/:/home/corrado/.local/bin:......
 
-
-    
     --}
 
 main :: IO()      
 main = do
 {
-  --  putStrLn ("haskell main "++  show(square 3));
+    --  commented 
+    --  putStrLn ("haskell main "++  show(square 3));
     putStrLn "haskell main";
 
     putStrLn ("gh sum list of integers:" ++  show (fsum  [1..5]) );
