@@ -30,11 +30,12 @@ import GH_course
 
     export PATH=/home/corrado/.cabal/bin/:/home/corrado/.local/bin:......
 
+    
     --}
 
 main :: IO()      
 main = do
-{
+--{
 
     --  putStrLn ("haskell main "++  show(square 3));
     putStrLn "haskell main";
@@ -98,5 +99,5 @@ main = do
         
         --}
       
-}
+--}
     
