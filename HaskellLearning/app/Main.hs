@@ -35,7 +35,7 @@ import GH_course
 main :: IO()      
 main = do
 {
-    --  commented ..
+
     --  putStrLn ("haskell main "++  show(square 3));
     putStrLn "haskell main";
 
