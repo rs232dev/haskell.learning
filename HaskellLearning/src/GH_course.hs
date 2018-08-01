@@ -969,8 +969,7 @@ newtype Nat = N Int
 -- Eq, it must support equality and inequality operator of the specified type.
 --
 -- In fact, because a default definition has already been included for the /=
--- operator, declaring an instance require  only requires a definition for the
--- == operator .     
+-- operator, declaring an instance only requires a definition for the == operator.     
 -- example:
 --
 -- instance Eq Bool where
@@ -981,7 +980,18 @@ newtype Nat = N Int
 -- NB: Only type that are declared using data and newtype mechanisms can be
 -- made into instances of classses.
 --
--- Classes can also be extended to form new classes:
 -- -------------------------------------------------------------------------- -- 
+ 
+data TrafficLight = Red | Yellow | Green  
+
+instance Eq TrafficLight where  
+    Red    == Red     = True  
+    Green  == Green   = True  
+    Yellow == Yellow  = True  
+    _ == _       = False 
 
 
+-- -------------------------------------------------------------------------- -- 
+-- Classes can also be extended to form new classes:
+
+         
