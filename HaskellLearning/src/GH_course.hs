@@ -880,7 +880,7 @@ move East (x,y)  = (x+1,y)
 move West (x,y)  = (x-1,y)
 
 -- The constructor in data declaration can also have arguments:
-data Shape = Circle Float |  Rect Float Float
+data Shape = Circle Float |  Rect Float Float deriving (Eq)
 
 square :: Float -> Shape
 square n = Rect n n
@@ -982,7 +982,7 @@ newtype Nat = N Int
 --
 -- -------------------------------------------------------------------------- -- 
  
-data TrafficLight = Red | Yellow | Green  
+data TrafficLight = Red | Yellow | Green
 
 instance Eq TrafficLight where  
     Red    == Red     = True  
@@ -992,6 +992,84 @@ instance Eq TrafficLight where
 
 
 -- -------------------------------------------------------------------------- -- 
--- Classes can also be extended to form new classes:
+-- Classes can also be extended to form new classes.
+-- For example the class Ord of types whose value are totally ordered is declared
+-- in the standard prelude as an extension of the class Eq.
+-- commented to avoid duplicate declaration:
+{--
+class  (Eq a) => Ord a  where
+    (<), (<=), (>), (>=) :: a -> a -> Bool
+    max, min             :: a -> a -> a
 
-         
+    min x y | x<= y = x
+            | otherwise      = y
+
+    max x y | x<= y = y
+            | otherwise      = x
+--}
+-- -------------------------------------------------------------------------- -- 
+
+-- -------------------------------------------------------------------------- -- 
+-- Deriving instance.                                                         --
+-- Haskell provide a simple facility for automatically making new type into   --
+-- instance of the classes Eq,Ord,Show  and actually declared in the standard --
+-- prelude.                                                                   --
+-- -------------------------------------------------------------------------- -- 
+data TrafficLight2 = Red2 | Yellow2 | Green2 deriving (Eq,Show)
+tf1 = Green2
+tf2 = Red2
+
+-- In the case of constructors with arguments. the types of these arguments   --
+-- must also be an instance of any derived classes.
+
+-- data Shape = Circle Float |  Rect Float Float                              --
+-- to derive Shape as an equality type requires that the type FLoat is also   --
+-- an equality type.
+eq_shape =  (Circle 2.0) == (Circle 2.0)
+
+
+
+-- ========================================================================== ==
+--                                                                            ==
+--     ________         _____               __     __                         ==
+--    /_  __/ /  ___   / ___/__  __ _____  / /____/ /__ _    _____            ==
+--     / / / _ \/ -_) / /__/ _ \/ // / _ \/ __/ _  / _ \ |/|/ / _ \           ==
+--    /_/ /_//_/\__/  \___/\___/\_,_/_//_/\__/\_,_/\___/__,__/_//_/           ==
+--                    __   __                                                 ==
+--     ___  _______  / /  / /__ __ _                                          ==
+--    / _ \/ __/ _ \/ _ \/ / -_)  ' \                                         ==
+--   / .__/_/  \___/_.__/_/\__/_/_/_/                                         ==
+--  /_/                                                                       ==
+-- ========================================================================== ==
+-- Given a sequence of numbers and a target number, attempt to construct an   --
+-- expression whose value is the target, by combining one oe more numbers     --
+-- from the sequence using addition, subtraction, moltiplication, division    --
+-- and parentheses.                                                           --
+-- Example:
+-- 1,3,7,10,25,50 target: 765
+-- (1+50) * (25-10)
+-- -------------------------------------------------------------------------- -- 
+-- declaring type for arithmetic opeartions:
+data Op = Add | Sub | Mul | Div
+
+instance Show Op where
+    show Add = "+"
+    show Sub = "-"
+    show Mul = "+"
+    show Div = "/"
+
+-- function to validate an expression
+valid :: Op -> Int -> Int -> Bool
+valid Add _ _ = True
+valid Sub x y = x > y
+valid Mul _ _ = True
+valid Div x y = x `mod` y == 0 
+
+-- function to apply an expression
+apply :: Op -> Int -> Int -> Int
+apply Add x y = x + y
+apply Sub x y = x - y
+apply Mul x y = x * y
+apply Div x y = x `div` y
+
+

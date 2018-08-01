@@ -72,10 +72,17 @@ main = do
     -- defining function
     putStrLn ("abs :" ++  show ( GH_course.abs (-4)));
 
-
     -- lambda function
     putStrLn ("add'' :" ++  show ( GH_course.add'' 2 5));
     putStrLn ("odd'' :" ++  show ( GH_course.odd  10));
+
+    -- deriving instances    
+    putStrLn ("(deriving Show tf1) :" ++  show ( GH_course.tf1));
+    putStrLn ("(deriving Show tf2) :" ++  show ( GH_course.tf2));
+    putStrLn ("(deriving Eq)       :" ++  show ( tf1 == tf2));
+    putStrLn ("(deriving Eq Shape) :" ++  show ( eq_shape));
+
+
 
             {--
             putStrLn "haskell main";
