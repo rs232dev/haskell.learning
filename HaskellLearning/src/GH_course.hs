@@ -1155,7 +1155,7 @@ perms (x:xs) = Prelude.concat (map (interleave x) (perms xs))
 -- [[1,2,3],[2,1,3],[2,3,1],[1,3,2],[3,1,2],[3,2,1]]
 
 
--- -------------------------------------------------------------------------- -- 
+-- ========================================================================== ==    
 --    ____     __                   __  _                                     --
 --   /  _/__  / /____ _______ _____/ /_(_)  _____                             --
 --  _/ // _ \/ __/ -_) __/ _ `/ __/ __/ / |/ / -_)                            --
@@ -1166,11 +1166,69 @@ perms (x:xs) = Prelude.concat (map (interleave x) (perms xs))
 --  / ___/ __/ _ \/ _ `/ __/ _ `/  ' \/  ' \/ / _ \/ _ `/                     --
 -- /_/  /_/  \___/\_, /_/  \_,_/_/_/_/_/_/_/_/_//_/\_, /                      --
 --               /___/                            /___/                       --
+-- ========================================================================== ==    
+
+
+-- -------------------------------------------------------------------------- -- 
+-- Basic Actions                                                              --
+--                                                                            --
+-- > :t getChar                                                               --
+-- getChar :: IO Char                                                         --
+--             \                                                              --
+--              \___ state of the world                                       --
+--               \                                                            --
+-- :t putChar     \__                                                         --
+--                   \                                                        --
+-- putChar :: Char -> IO ()                                                   --
+--                                                                            --
+-- The function return provides a bridge from pure expressions without side   --
+-- effects to impure actions with side effects.                               -- 
+-- There is no bridge back! Once we are impure we are impure forever with no  --
+-- possibility for redemption!                                                --
+--                                                                            --
+-- > :t return                                                                --
+-- return :: Monad m => a -> m a                                              --
+--                                                                            --
 -- -------------------------------------------------------------------------- --
 
+-- -------------------------------------------------------------------------- --
+-- Sequencing:                                                                --
+--                                                                            --
+-- A sequence of IO actions can be combined into a single composite action    --
+-- using do notation.                                                         --
+--                                                                            --
+-- Example of action which reads three characters, discards the second, and   --
+-- returns the first and third as pair.                                       --
+-- -------------------------------------------------------------------------- --
+act1 :: IO (Char,Char)
+act1 = do x <- getChar
+          getChar
+          y <- getChar 
+          return (x,y)
 
+-- example:
+-- > act1
+-- abc('a','c')
 
+-- -------------------------------------------------------------------------- --
+-- primitive actions:                                                         --
+-- -------------------------------------------------------------------------- --
+-- 
+-- > :t getLine
+-- getLine :: IO String
+--
+-- > :t putStr
+-- putStr :: String -> IO ()
+--
+-- > :t putStrLn
+-- putStrLn :: String -> IO ()
 
-
+{--
+hangman :: IO()
+hangman = do putStrLn "Think of a word"
+             word <- sgetline
+             putStrLn "try to guess it:"
+             play word
+--}
 
 
