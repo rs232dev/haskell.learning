@@ -28,6 +28,14 @@ import GH_course
     cabal update
     cabal install hlint
 
+
+-- vi .stack/global-project/stack.yaml 
+  extra-deps:
+  - conduit-extra-1.1.17
+
+    stack install intero QuickCheck 
+
+
     export PATH=/home/corrado/.cabal/bin/:/home/corrado/.local/bin:......
 
     
