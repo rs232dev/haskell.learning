@@ -82,6 +82,8 @@ main = do
     putStrLn ("(deriving Eq)       :" ++  show ( tf1 == tf2));
     putStrLn ("(deriving Eq Shape) :" ++  show ( eq_shape));
 
+    putStrLn ("(show expression) :" ++  show ( expr1));
+
 
 
             {--

@@ -1072,4 +1072,88 @@ apply Sub x y = x - y
 apply Mul x y = x * y
 apply Div x y = x `div` y
 
+-- type for numeric expressions:
+data Expr = Val Int | App Op Expr Expr
+
+instance Show Expr where
+    show (Val n)       = show n
+    show (App o l r)   = brak l ++ show o ++ brak r
+                         where 
+                            brak (Val n) = show n
+                            brak e       = "(" ++ show e ++ ")"
+
+-- for example 1 + (2 * 3)
+expr1 = App Add (Val 1) (App  Mul (Val 2) (Val 3))
+
+
+-- list of value in an expression
+values :: Expr -> [Int]
+values (Val n) = [n]
+values (App _ l r) = values l ++  values r
+
+-- example:
+-- > values expr1
+--   [1,2,3]
+
+-- eval an expression
+eval :: Expr -> [Int]
+eval (Val n)      = [n | n >0]
+eval (App o l r)  = [apply o x y | x <- eval l,
+                                   y <- eval r,
+                                   valid o x y] 
+
+-- example (expr = 1 + (3 * 2):
+-- > eval expr1
+-- [7]
+
+expr2 =  App Add (Val 1) (App  Mul (Val (-2)) (Val 3))
+
+-- example:
+-- > values expr2
+-- [1,-2,3]
+
+-- eval expr2
+-- []
+
+-- combinatorial functions
+--
+-- (x:) Example: x=
+-- myfun = (1:)
+-- > :myfun j
+-- myfun :: Num a => [a] -> [a]
+-- > myfun [2]
+-- [1,2]               
+
+-- The subsequences function returns the list of all subsequences of the 
+-- argument. > subsequences "abc" == ["","a","b","ab","c","ac","bc","abc"] 
+subs :: [a] -> [[a]]
+subs []     = [[]]
+subs (x:xs) = yss ++ map (x:) yss 
+              where yss = subs xs                             
+
+-- example:
+-- > subs [1,2,3]
+-- [[],[3],[2],[2,3],[1],[1,3],[1,2],[1,2,3]]
+
+-- The interleave function returns all possible ways of inserting
+-- a new element to a list.
+interleave :: a -> [a] -> [[a]]
+interleave x []     = [[x]]
+interleave x (y:ys) = (x:y:ys) : map (y:) (interleave x  ys)
+
+-- example
+-- > interleave 5 [1,2,3]
+-- [[5,1,2,3],[1,5,2,3],[1,2,5,3],[1,2,3,5]]
+
+-- The function perms return all permutations of a list
+perms :: [a] -> [[a]]
+perms []     = [[]]
+perms (x:xs) = Prelude.concat (map (interleave x) (perms xs))
+
+-- example:
+-- > perms [1,2,3]
+-- [[1,2,3],[2,1,3],[2,3,1],[1,3,2],[3,1,2],[3,2,1]]
+
+
+
 
