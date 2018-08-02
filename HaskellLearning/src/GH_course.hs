@@ -1,6 +1,7 @@
 module GH_course where 
 
 import Data.Char  -- functions on characters
+import System.IO
 
 -- ========================================================================== ==    
 -- pag. 9 "a taste of haskell" 
@@ -1223,12 +1224,108 @@ act1 = do x <- getChar
 -- > :t putStrLn
 -- putStrLn :: String -> IO ()
 
-{--
+
+-- -------------------------------------------------------------------------- --
+-- hangman:                                                                   --
+-- -------------------------------------------------------------------------- --
 hangman :: IO()
 hangman = do putStrLn "Think of a word"
-             word <- sgetline
+             word <- sgetLine
              putStrLn "try to guess it:"
              play word
---}
 
+sgetLine :: IO String
+sgetLine = do x <- getCh
+              if x == '\n' then
+                 do putChar x
+                    return []
+              else
+                do putChar '-'
+                   xs <- sgetLine
+                   return (x:xs)
+
+getCh :: IO Char
+getCh = do hSetEcho stdin False
+           x <- getChar
+           hSetEcho stdin True
+           return x
+
+
+play:: String -> IO()
+play word = do putStr "? "
+               guess <- getLine
+               if guess == word then
+                  putStrLn "you got it!!"
+               else
+                  do putStrLn (match word guess)   
+                     play word
+
+-- > elem 1 [2,1,3]
+-- True
+--
+-- elem 5 [2,1,3]
+--False
+
+match :: String -> String -> String
+match xs ys = [if elem x ys then x else '-' | x <- xs]
+
+-- ========================================================================== ==    
+--     ____              __                                                   ==
+--    / __/_ _____  ____/ /____  _______                                      ==
+--   / _// // / _ \/ __/ __/ _ \/ __(_-<                                      ==
+--  /_/  \_,_/_//_/\__/\__/\___/_/ /___/                                      ==
+-- ========================================================================== ==
+
+-- abstracting out a comon pattern as a definition
+inc :: [Int] -> [Int]
+inc []       = []
+inc (n:ns)   =  n+1 : inc ns
+
+sqr :: [Int] -> [Int]
+sqr []       = []
+sqr (n:ns)   =  n^2 : sqr ns
+
+-- examples:
+-- >GH_course.inc [1,4,8]
+--  [2,5,9]
+
+-- >GH_course.sqr [2,3,9]
+-- [4,9,81]
+
+-- abstracting these functions by map function:
+inc' = map (+1)
+sqr' = map (^2)
+
+-- examples:
+-- > inc' [1,7,9]
+-- [2,8,10]
+
+-- > sqr' [1,7,9]
+-- [1,49,81]
+
+-- new type Mayne'
+data Maybe' a = Nothing' | Just' a deriving (Show)
+
+-- make Maybe' an instance of Functor
+instance Functor Maybe' where
+    -- fmap :: (a->b) -> Maybe' a -> Maybe' b
+    fmap _ Nothing'  = Nothing'
+    fmap g (Just' x) = Just' (g x)
+
+-- examples:
+
+-- > fmap (+1) (Just' 8)
+-- Just' 9
+
+-- > fmap (+1) Nothing'
+-- Nothing'
+
+
+-- ========================================================================== ==    
+--     __  ___                  __                                            ==
+--    /  |/  /__  ___  ___ ____/ /__                                          ==
+--   / /|_/ / _ \/ _ \/ _ `/ _  (_-<                                          ==
+--  /_/  /_/\___/_//_/\_,_/\_,_/___/                                          ==
+-- ========================================================================== ==
+    
 
