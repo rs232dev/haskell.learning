@@ -1320,6 +1320,67 @@ instance Functor Maybe' where
 -- > fmap (+1) Nothing'
 -- Nothing'
 
+-- User defined types can be also made into a functors:
+data Tree a = Leaf a | Node (Tree a) (Tree a) deriving Show
+
+instance Functor Tree where
+    -- fmap :: (a -> b) -> Tree a -> Tree b
+    fmap g (Leaf x)   = Leaf (g x)
+    fmap g (Node l r) = Node (fmap g l) (fmap g r)
+
+
+-- examples.
+
+-- > fmap length (Leaf "abc")
+-- Leaf 3
+
+-- > fmap even (GH_course.Node (Leaf 1) (Leaf 2))
+-- Node (Leaf False) (Leaf True)
+
+{--
+
+instance Functor IO is defined in `GHC.Base.
+In this case, fmap applies a function to the result value of the
+argument action.
+
+
+instance Functor IO where
+    -- fmap :: (a -> b) -> IO a -> IO b
+    fmap g mx = do
+                {
+                    x <- mx;       -- mx is an action
+                    return (g x);  -- g x is the function application to the
+                                   -- action result x.
+                }
+                
+--}
+
+-- examples:
+-- > fmap show (return True)
+-- "True"
+
+-- ========================================================================== ==    
+--      ___             ___          __  _                                    ==
+--     / _ | ___  ___  / (_)______ _/ /_(_)  _____ ___                        ==
+--    / __ |/ _ \/ _ \/ / / __/ _ `/ __/ / |/ / -_|_-<                        ==
+--   /_/ |_/ .__/ .__/_/_/\__/\_,_/\__/_/|___/\__/___/                        ==
+--        /_/  /_/                                                            ==
+-- ========================================================================== ==
+-- Functors abstract the idea of mapping functions over each elements of a 
+-- structure.
+--    
+-- > :t pure
+-- pure :: Applicative f => a -> f a
+--
+-- > :t (<*>)
+-- (<*>) :: Applicative f => f (a -> b) -> f a -> f b
+-- 
+-- pure converts a value of type a into a structure of type f a.
+-- <*> is a generalized form of function application for which the argument
+-- function, the argument value and the result vale are all contained in f
+-- structures.
+
+
 
 -- ========================================================================== ==    
 --     __  ___                  __                                            ==
