@@ -1407,7 +1407,137 @@ instance Applicative Maybe' where
     Nothing'  <*> _  = Nothing'
     (Just' g) <*> mx = fmap g mx
     
- 
+
+-- pure should take a value of any type and return an applicative functor with
+-- that value inside it.     
+
+-- A better way of thinking about pure would be to say that it takes a value 
+-- and puts it in some sort of default (or pure) context—a minimal context 
+-- that still yields that value.
+
+-- The <*> function is really interesting. 
+-- It has a type declaration of f (a -> b) -> f a -> f b. 
+--
+-- Does this remind you of anything? 
+-- Of course, fmap :: (a -> b) -> f a -> f b. 
+
+-- It's a sort of a beefed up fmap. 
+-- Whereas fmap takes a function and a functor and applies the function inside 
+-- the functor, <*> takes a functor that has a function in it and another 
+-- functor and sort of extracts that function from the first functor and then
+-- maps it over the second one. 
+-- When I say extract, I actually sort of mean run and then extract, maybe even
+-- sequence. We'll see why soon. 
+--
+--    instance Applicative Maybe where  
+--        pure = Just  
+--        Nothing <*> _ = Nothing  
+--        (Just f) <*> something = fmap f something  
+--
+-- Again, from the class definition we see that the f that plays the role of 
+-- the applicative functor should take one concrete type as a parameter, so 
+-- we write instance Applicative Maybe where instead of writing instance 
+-- Applicative (Maybe a) where.
+--
+-- We have the definition for <*>. 
+-- We can't extract a function out of a Nothing, because it has no function 
+-- inside it. So we say that if we try to extract a function from a Nothing, the
+-- result is a Nothing. 
+-- If you look at the class definition for Applicative, you'll see that there's
+-- a Functor class constraint, which means that we can assume that both of <*>'s
+-- parameters are functors. 
+-- If the first parameter is not a Nothing, but a Just with some function inside
+-- it, we say that we then want to map that function over the second parameter.
+-- This also takes care of the case where the second parameter is Nothing, 
+-- because doing fmap with any function over a Nothing will return a Nothing.
+--
+-- examples:
+-- > Just (+3) <*> Just 9
+-- Just 12
+
+-- > pure (+3) <*> Just 9
+-- Just 12
+
+-- pure (++ " haskell!!") <*> Just "Hello"
+--Just "Hello haskell!!"
+
+-- > Just (+3) <*> Nothing
+-- Nothing
+
+-- > Nothing <*> Just 9
+-- Nothing
+
+-- > [(+1),(*2)] <*> [2,4]
+-- [3,5,4,8]
+
+
+
+
+-- Applicative Laws
+-- 
+-- * identity:
+--     pure id<*> v = v
+--
+-- * composition
+--     pure(.)<*> u <*> v <*> w = u<*>(v<*>w)
+--
+-- * homorphism 
+--   pure f<*> pure x = pure (f x)
+--
+
+
+-- example:
+-- > pure (+1) <*> Just 1
+-- Just 2
+--
+-- > fa = pure (+1)
+-- :t fa
+-- fa :: (Applicative f, Num a) => f (a -> a)
+
+-- instance Applicative [] where
+--  pure a        = [a]
+--  [] <*> _      = []
+--  (f:fs) <*> as = (map f as) ++ (fs <*> as)
+
+--  prods xs ys = pure(*) <*> xs <*> ys
+-- > :t prods
+-- prods :: (Applicative f, Num b) => f b -> f b -> f b
+
+
+-- > :t pure
+-- pure :: Applicative f => a -> f a
+
+-- > :t pure(+)
+-- pure(+) :: (Applicative f, Num a) => f (a -> a -> a)
+--                                            \__ encapsulated function of arity 2
+
+-- > :t pure(+1)                            
+-- pure(+1) :: (Applicative f, Num a) => f (a -> a)
+--                                            \__ encapsulated function of arity 1
+-- examples:
+
+-- > pure(+1) <*> [1,2,3]
+-- [2,3,4]
+
+-- Main> :t pure(+) <*> [1,2,3]
+-- pure(+) <*> [1,2,3] :: Num a => [a -> a] -- returns an encaspulated funciotn of arity 1
+
+-- > pure(+) <*> [1,2,3] <*> [10,11,12]
+-- [11,12,13,12,13,14,13,14,15]
+
+-- > :t (<*>)
+-- (<*>) :: Applicative f => f (a -> b) -> f a -> f b
+
+-- there is no Show instance for [IO ()] you get the error. If you want to 
+-- evaluate the actions you can use sequence_: sequence_ (tail ls)
+--
+-- > sequence_ (pure(putStrLn) <*> ["ciao","come","stai"])
+-- ciao
+-- come
+-- stai
+
+
+
 
 
 -- ========================================================================== ==    

@@ -106,7 +106,7 @@ main = do
         
             putStrLn ("polymorpchic fun :" ++ show(plength ll2));
         
-            putStrLn ("myfoldr_sum     :" ++ show(myfoldr (+) 0 [1,2,3,4,5]));
+            putStrLn ("myfoldr_sum     :" ++ show(myfoldr (+) 0 [:1,2,3,4,5]));
             putStrLn ("myfoldr_product :" ++ show(myfoldr (*) 1 [1,2,3,4,5]));
         
             putStrLn ("tree:" ++ show(treedata));
