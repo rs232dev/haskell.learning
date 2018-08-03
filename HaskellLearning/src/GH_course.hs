@@ -1369,6 +1369,17 @@ instance Functor IO where
 -- Functors abstract the idea of mapping functions over each elements of a 
 -- structure.
 --    
+-- An Applicative Functor is a normal Functor with some extra features provided
+-- by the Applicative Type Class.
+--
+-- Using Functor, we usually map an existing function with another function 
+-- defined inside it. But there is no any way to map a function which is 
+-- defined inside a Functor with another Functor. That is why we have another 
+-- facility called Applicative Functor. This facility of mapping is implemented 
+-- by Applicative Type class defined under the Control module. 
+-- This class gives us only two methods to work with: one is pure and the other
+-- one is <*>.
+
 -- > :t pure
 -- pure :: Applicative f => a -> f a
 --
@@ -1378,8 +1389,25 @@ instance Functor IO where
 -- pure converts a value of type a into a structure of type f a.
 -- <*> is a generalized form of function application for which the argument
 -- function, the argument value and the result vale are all contained in f
--- structures.
+-- structures:
 
+-- The class Functors that support pure and <*> functions are called applicative
+-- functors, or applicatives.
+
+-- class (Functor f) => Applicative f where   
+-- pure :: a -> f a   
+-- (<*>) :: f (a -> b) -> f a -> f b   
+--
+-- Make Maybe' type into an applicative fuctor:
+instance Applicative Maybe' where
+    -- pure:: a -> Maybe a
+    pure = Just'
+
+    -- (<*>) :: Maybe' (a -> b) -> Maybe' a -> Maybe' b
+    Nothing'  <*> _  = Nothing'
+    (Just' g) <*> mx = fmap g mx
+    
+ 
 
 
 -- ========================================================================== ==    
