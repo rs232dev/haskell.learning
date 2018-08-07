@@ -1471,8 +1471,6 @@ instance Applicative Maybe' where
 -- [3,5,4,8]
 
 
-
-
 -- Applicative Laws
 -- 
 -- * identity:
@@ -1525,6 +1523,53 @@ instance Applicative Maybe' where
 -- > pure(+) <*> [1,2,3] <*> [10,11,12]
 -- [11,12,13,12,13,14,13,14,15]
 
+-- Consider a function that returns all possibles ways of multiplying two list of integers.
+
+iprods:: [Int] -> [Int] -> [Int]
+iprods xs ys = [x * y | x <- xs, y <- ys]
+
+-- example:
+-- > iprod [3,4,5][10,20,30]
+-- [30,60,90,40,80,120,50,100,150]
+
+-- we ca give an applicative definition, which avoids having to name the 
+-- intermediate result.
+
+iprod_app :: [Int] -> [Int] -> [Int]
+iprod_app  xs ys = pure(*) <*> xs <*> ys
+
+-- examples:
+-- > iprod_app [1,2,3] [4,5,7]
+-- [4,5,7,8,10,14,12,15,21]
+
+{--
+
+-- Consider the IO type, which can be made into an applicative functor
+-- using the following declaration:
+-- In this case, pure is given by return function for the IO type, and
+-- <*> applies an impure function to an impure argument to gibe an 
+-- impure result.
+
+instance Applicative IO where
+    -- pure :: a -> IO a
+    pure = return
+
+    -- <*> :: IO (a -> b) -> IO a -> IO b
+    mg <*> mx = do
+                {
+                    g <- mg;
+                    x <- mx;
+                    return (g x)
+                }
+
+--}
+
+-- examples:
+getChars :: Int -> IO String
+getChars 0 = return []
+getChars n = pure (:) <*> getChar <*> getChars(n-1)
+
+
 -- > :t (<*>)
 -- (<*>) :: Applicative f => f (a -> b) -> f a -> f b
 
@@ -1538,13 +1583,13 @@ instance Applicative Maybe' where
 
 
 
-
-
 -- ========================================================================== ==    
 --     __  ___                  __                                            ==
 --    /  |/  /__  ___  ___ ____/ /__                                          ==
 --   / /|_/ / _ \/ _ \/ _ `/ _  (_-<                                          ==
 --  /_/  /_/\___/_//_/\_,_/\_,_/___/                                          ==
 -- ========================================================================== ==
+
+
     
 

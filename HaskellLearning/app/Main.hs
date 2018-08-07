@@ -38,7 +38,29 @@ import GH_course
 
     export PATH=/home/corrado/.cabal/bin/:/home/corrado/.local/bin:......
 
+-- remove and reinstall:
+Leaving GHCi.
+$ ghc-pkg unregister hlint
+$ cabal install hlint
     
+
+Leaving GHCi.
+$: export LC_ALL="en_GB.utf8"
+$::~/dev/haskell$ ghci
+GHCi, version 8.4.3: http://www.haskell.org/ghc/  :? for help
+Prelude> :set prompt "\x03BB:"
+λ::q
+Leaving GHCi.
+
+or:
+$  export LC_ALL="en_GB.utf8"
+$ stack ghci --ghci-options Main.hs
+$::~/dev/haskell$ ghci
+GHCi, version 8.4.3: http://www.haskell.org/ghc/  :? for help
+Prelude> :set prompt "\x03BB:"
+λ::q
+Leaving GHCi.
+
     --}
 
 main :: IO()      
