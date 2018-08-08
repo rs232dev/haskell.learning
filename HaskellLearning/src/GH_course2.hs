@@ -129,3 +129,110 @@ meval (Div x y)  = meval x >>= \n ->
 -- Moreover the user does nothave to worry about dealing with the possibility    
 -- of failure at any point of sequence, as this handled automatically by the
 -- definition of the >>= operator.
+--
+-- -------------------------------------------------------------------------- --
+--     ___  ____    _  __     __       __  _         
+--    / _ \/ __ \  / |/ /__  / /____ _/ /_(_)__  ___ 
+--   / // / /_/ / /    / _ \/ __/ _ `/ __/ / _ \/ _ \
+--  /____/\____/ /_/|_/\___/\__/\_,_/\__/_/\___/_//_/
+-- -------------------------------------------------------------------------- --
+--     
+-- Haskell provides a special notation for expression of the above form, 
+-- allowing them to be written in a simple manner as follows:
+-- do x1 <- m1
+--    x2 <- m2
+--    ...
+--    ...
+--    ...
+--    xn <- mn
+--    f x1 x2 ... xn
+
+-- in this case each item in the sequence must begin in the same column, and
+-- Using this notation (do notation), meval can now be redefined as:
+doeval :: Expr -> Maybe Int
+doeval (Val n)   = Just n
+doeval (Div x y) = do n <- doeval x
+                      m <- doeval y
+                      safediv n m
+
+-- examples:
+-- > GH_course2.doeval (GH_course2.Div (GH_course2.Val 1) (GH_course2.Val 0))
+-- Nothing
+--
+-- > GH_course2.doeval (GH_course2.Div (GH_course2.Val 0) (GH_course2.Val 1))
+-- Just 0
+-- 
+-- > GH_course2.doeval (GH_course2.Div (GH_course2.Val 8) (GH_course2.Val 2))
+-- Just 4
+
+-- do notation is not specific to the type IO and Maybe, but can be used with 
+-- any aoolicative type that forms a monad.
+-- 
+-- In Haskell, the concept of monad is captured by the following builtin
+-- declaration:
+--
+-- class Applicative m => Monad m where
+--    return ::   a                 -> m a
+--    (>>=)  :: m a -> (  a -> m b) -> m b
+--
+-- return = pure
+--
+-- A monad is an applicative type m that supports return and >>= functions of 
+-- the specified types.
+-- The default definition return = pure that return is normally just another
+-- name for the applicative functor pure.
+-- 
+
+-- Maybe Monad
+--
+-- instance  Monad Maybe  where
+-- -- (>>=) ;;  Maybe a -> (a -> Maybe b) -> Maybe b      
+--    Nothing  >>= _      = Nothing
+--    (Just x) >>= f      = f x
+
+-- List Monad
+--
+-- instance  Monad []  where
+-- -- (>>=) ::  [a] -> (a -> [b]) -> [b]      
+--    xs >>= f = [y | x <- xs, y <- f x]
+--
+-- xs >>= f applies the function f to each of the result in the list xs,
+-- collecting all the resulting values in a list.
+-- In this manner the bind operator (>>=) for list provides a means of 
+-- sequencing expressions that may produce multiple results.
+-- -------------------------------------------------------------------------- --
+--
+-- example (do notation):
+pairs :: [a] -> [b] -> [(a,b)]
+pairs [] _  = []
+pairs _ []  = []
+pairs xs ys = do x <- xs
+                 y <- ys
+                 return  (x,y)
+--
+-- > pairs [1,2] [3,4]
+-- [(1,3),(1,4),(2,3),(2,4)]
+-- -------------------------------------------------------------------------- --
+--
+-- example (comprehension notation):
+pairs' :: [a] -> [b] -> [(a,b)]
+pairs' [] _  = []
+pairs' _ []  = []
+pairs' xs ys = [(x,y) | x <- xs, y <- ys]
+
+-- > pairs' [1,2] [3,4]
+-- [(1,3),(1,4),(2,3),(2,4)]
+--
+-- -------------------------------------------------------------------------- --
+
+
+-- ========================================================================== == 
+--    ______       __        __  ___                  __                      ==
+--   / __/ /____ _/ /____   /  |/  /__  ___  ___ ____/ /                      ==
+--  _\ \/ __/ _ `/ __/ -_) / /|_/ / _ \/ _ \/ _ `/ _  /                       ==
+-- /___/\__/\_,_/\__/\__/ /_/  /_/\___/_//_/\_,_/\_,_/                        ==
+--                                                                            ==    
+-- ========================================================================== ==
+    
+
+
