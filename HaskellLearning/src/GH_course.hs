@@ -1547,7 +1547,7 @@ iprod_app  xs ys = pure(*) <*> xs <*> ys
 -- Consider the IO type, which can be made into an applicative functor
 -- using the following declaration:
 -- In this case, pure is given by return function for the IO type, and
--- <*> applies an impure function to an impure argument to gibe an 
+-- <*> applies an impure function to an impure argument to give an 
 -- impure result.
 
 instance Applicative IO where

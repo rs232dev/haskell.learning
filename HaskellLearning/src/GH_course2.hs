@@ -281,3 +281,5 @@ newtype ST a = S (State -> (a,State))
 app :: ST a -> State -> (a, State)
 app (S st) x =  st x
 
+-- test:
+-- > nnn = S(\x -> (1,x))
