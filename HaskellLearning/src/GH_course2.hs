@@ -233,6 +233,51 @@ pairs' xs ys = [(x,y) | x <- xs, y <- ys]
 -- /___/\__/\_,_/\__/\__/ /_/  /_/\___/_//_/\_,_/\_,_/                        ==
 --                                                                            ==    
 -- ========================================================================== ==
-    
+--
+-- Consider function that manipulate some form of state that can be changed over    
+-- time.
+-- For simplicity, we assume that the state is just an integer value, but this
+-- can be modified as required.
+--
+type State = Int
 
+-- The most basic form of function on this type is a state transformer ST, which
+-- takes in inpute state as its argument and produces an output state as its 
+-- result, i which the output state reflects any updates that were made to the 
+-- state by the function during its execution.
+
+-- type ST = State -> State
+
+-- In general homewever we may wish to return a result value in addition to
+-- updating the state. For example, if the state  represents a counter, a 
+-- function for incrementing the counter may also wish to return its current
+-- value.
+-- For this reason we generalise the type of the state transformer ST to:
+
+--type ST a = State -> (a, State)
+
+--
+--               ---------------            output
+--               |              | -----> v (value)
+--               |              |
+--               |              |
+--  input        |              |
+-- current state |              |             output
+--       s --->  |              | -----> s' (new state)
+--               ----------------
+
+-- Given that ST is a parameterised type, it is natural to try make it into a
+-- monad, so that the do notation cen then be used to write stateful programs.
+-- Homewever, types declared using type mechanism cannot be made into instances
+-- of classes.
+-- Hence, we first redefine ST using the newtype mechanism, whuch requires 
+-- introducing a dummy constructor, wich we call S:
+
+newtype ST a = S (State -> (a,State))
+
+-- It's also convenient to define a special purpose application function for
+-- this type, which simply remove the dummy constructor:
+--
+app :: ST a -> State -> (a, State)
+app (S st) x =  st x
 
