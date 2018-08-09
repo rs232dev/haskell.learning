@@ -938,7 +938,7 @@ safehead xs = Just (head xs)
 --  / // / -_) __/ / _ `/ __/ _ `/ __/ / _ \/ _ \                             --
 -- /____/\__/\__/_/\_,_/_/  \_,_/\__/_/\___/_//_/                             --
 --                                                                            -- 
--- If a new type has a single constructor with a single arument, then it can  --
+-- If a new type has a single constructor with a single argument, then it can  --
 -- also be declared using 'newtype' nechanism.                                --
 --                                                                            -- 
 -- -------------------------------------------------------------------------- --

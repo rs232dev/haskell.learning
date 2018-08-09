@@ -254,26 +254,26 @@ type State = Int
 -- value.
 -- For this reason we generalise the type of the state transformer ST to:
 
---type ST a = State -> (a, State)
+-- type ST a = State -> (a, State)
 
 --
 --               ---------------            output
 --               |              | -----> v (value)
 --               |              |
---               |              |
+--               |     ST       |
 --  input        |              |
 -- current state |              |             output
 --       s --->  |              | -----> s' (new state)
 --               ----------------
 
 -- Given that ST is a parameterised type, it is natural to try make it into a
--- monad, so that the do notation cen then be used to write stateful programs.
+-- monad, so that the do notation can then be used to write stateful programs.
 -- Homewever, types declared using type mechanism cannot be made into instances
 -- of classes.
 -- Hence, we first redefine ST using the newtype mechanism, whuch requires 
 -- introducing a dummy constructor, wich we call S:
 
-newtype ST a = S (State -> (a,State))
+newtype ST a = S (State -> (a,State)) 
 
 -- It's also convenient to define a special purpose application function for
 -- this type, which simply remove the dummy constructor:
@@ -281,5 +281,70 @@ newtype ST a = S (State -> (a,State))
 app :: ST a -> State -> (a, State)
 app (S st) x =  st x
 
--- test:
--- > nnn = S(\x -> (1,x))
+
+-- Note for dummies:
+-- newtype NPair a b = NPair (a, b)
+-- 
+-- > :t NPair
+-- NPair :: (a, b) -> NPair a b
+--
+-- > mypair = NPair (1,2)
+-- > :t mypair
+-- mypair :: (Num a, Num b) => NPair a b
+
+mystate = S(\x -> (1,x+1))
+-- > :t mystate
+-- mystate :: Num a => ST a
+
+-- make type ST into a Functor
+instance Functor ST where
+    -- fmap:: ST (a -> b) -> ST a -> ST b
+    fmap g st = S(\s -> let (x,s') = app st s in (g x, s'))
+
+
+-- diagram of the above fmap function
+--
+--               ---------------         -------- 
+--               |              |   x    |      |
+--               |     ST       | -----> |   g  | -----> g x 
+--               |              |        |      |
+--               |              |        --------
+--  input        |              |
+-- current state |              |             output
+--       s --->  |              | -----> s' (new state)
+--               ----------------
+
+
+stx f runState = 
+        \st -> let (x, st') = runState st 
+                    in (f x, st')
+
+-- > :t stx
+-- stx :: (t -> a) -> (p -> (t, b)) -> p -> (a, b)
+
+-- where:
+--
+-- f        :: (t -> a)
+-- st       :: p
+-- runState :: p -> (t, b)
+-- f x      :: a
+-- st'      :: b
+-- 
+-- the  let binding in the above function works as below indicated;
+-- 
+-- The tuple (x, st') is bound with the function application of runState to the
+-- st parameter:
+--          (x, st')
+--            \   \
+--             \   \ _ new state
+--              \
+--               \_ value
+--
+-- g   :: p -> (t, b)
+--
+-- then:
+--
+--  (f x, st')
+--
+-- produces a tuble with the result of the f x application (new value) and replies the new state
+
