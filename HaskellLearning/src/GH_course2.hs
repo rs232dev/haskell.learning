@@ -292,9 +292,7 @@ app (S st) x =  st x
 -- > :t mypair
 -- mypair :: (Num a, Num b) => NPair a b
 
-mystate = S(\x -> (1,x+1))
--- > :t mystate
--- mystate :: Num a => ST a
+
 
 -- make type ST into a Functor
 instance Functor ST where
@@ -313,38 +311,4 @@ instance Functor ST where
 -- current state |              |             output
 --       s --->  |              | -----> s' (new state)
 --               ----------------
-
-
-stx f runState = 
-        \st -> let (x, st') = runState st 
-                    in (f x, st')
-
--- > :t stx
--- stx :: (t -> a) -> (p -> (t, b)) -> p -> (a, b)
-
--- where:
 --
--- f        :: (t -> a)
--- st       :: p
--- runState :: p -> (t, b)
--- f x      :: a
--- st'      :: b
--- 
--- the  let binding in the above function works as below indicated;
--- 
--- The tuple (x, st') is bound with the function application of runState to the
--- st parameter:
---          (x, st')
---            \   \
---             \   \ _ new state
---              \
---               \_ value
---
--- g   :: p -> (t, b)
---
--- then:
---
---  (f x, st')
---
--- produces a tuble with the result of the f x application (new value) and replies the new state
-
