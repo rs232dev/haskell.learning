@@ -93,6 +93,11 @@ stateIntString2 :: State Int String
 stateIntString2 = State (\x -> ("some work2", x+10))
 
 
+boh :: State Int ()
+boh = State (\x -> ((), x+10))
+
+
+
 -- But what about runState? All that does of course is give us the "contents" of
 -- our State constructor: 
 --
@@ -161,7 +166,7 @@ stx f =
 --
 --  (f x, st')
 --
--- produces a tuble with the result of the f x application (new value) and 
+-- produces a tuple with the result of the f x application (new value) and 
 -- replies the new state
 
 
@@ -257,6 +262,12 @@ funcz x =  do
             ("some work.0 (+10)", x+10)
 
 
+-- > tx = State (\x -> ("ciao",x+1)) >>= (\z -> State (\x -> (z++".. some work2", x+10)))
+-- > runState tx 4
+-- ("ciao.. some work2",15)
+
+
+
 
 {--
 
@@ -294,3 +305,19 @@ funcIO1 x = do
 
 instance Show a => Show (StateIO s a) where
     show (StateIO s) = "T " ++ show ""
+
+
+
+
+type Memory = [(String, String)]
+
+varLookUp :: String -> Memory -> (String, Memory)
+varLookUp name mem = case varLookUpList' name mem of
+                            (Just s) -> (s, mem)
+                            Nothing -> ("Not found", mem)
+    where
+        varLookUpList' :: String -> Memory -> Maybe String
+        varLookUpList' name [] = Nothing
+        varLookUpList' name ((n,v):xs) = if name == n 
+                                             then Just v 
+                                             else varLookUpList' name xs
