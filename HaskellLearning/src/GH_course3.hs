@@ -28,6 +28,9 @@ instance Monad (State s) where
     -- runState (k a)    :: s -> (b,s)
     -- runState (k a) s' :: (b,s)
 
+instance (Show s,Show a) => Show (State s a) where
+        show (State a) =  "asd"
+
 instance Functor (State s) where
     fmap f (State g) = State (\st -> let (x, st') = g st 
                                          in (f x, st'))
@@ -50,7 +53,8 @@ instance Applicative (State s) where
 
 
 
-
+evalState :: State s a -> s -> a
+evalState act = fst . runState act
 
 
 
