@@ -23,7 +23,7 @@ instance Monad (State s) where
     -- >>= :: State s a -> (a -> State s b) -> State s b
     State f >>= k = State ( \s -> let (a,s') = f s 
                                     in runState (k a) s')
-
+       
     -- k a               :: State s b
     -- runState (k a)    :: s -> (b,s)
     -- runState (k a) s' :: (b,s)
@@ -92,15 +92,11 @@ stateIntString :: State Int String
 stateIntString = State (\x -> ("some work", x+1))
 --stateIntString = State fromStoAandS
 
-
 stateIntString2 :: State Int String
 stateIntString2 = State (\x -> ("some work2", x+10))
 
-
 boh :: State Int ()
 boh = State (\x -> ((), x+10))
-
-
 
 -- But what about runState? All that does of course is give us the "contents" of
 -- our State constructor: 
@@ -189,8 +185,6 @@ State constructor:
 i.e. a single 
 
     function :: s -> (a,s). 
-    
-
 
 --}
 
@@ -271,8 +265,6 @@ funcz x =  do
 -- ("ciao.. some work2",15)
 
 
-
-
 {--
 
 λ:tx = myState >>= (\x -> myState)
@@ -311,8 +303,6 @@ instance Show a => Show (StateIO s a) where
     show (StateIO s) = "T " ++ show ""
 
 
-
-
 type Memory = [(String, String)]
 
 varLookUp :: String -> Memory -> (String, Memory)
@@ -325,3 +315,5 @@ varLookUp name mem = case varLookUpList' name mem of
         varLookUpList' name ((n,v):xs) = if name == n 
                                              then Just v 
                                              else varLookUpList' name xs
+
+
