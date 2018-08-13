@@ -317,3 +317,9 @@ varLookUp name mem = case varLookUpList' name mem of
                                              else varLookUpList' name xs
 
 
+fn (x:xs) = (x+1) : xs;
+test'' = do 
+    {
+        x' <- getLine;
+        return x'
+    }                                    
