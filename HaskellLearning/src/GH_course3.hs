@@ -342,3 +342,6 @@ varLookUp name mem = case varLookUpList' name mem of
   
 --    (mv >>= f) >>= g  ==  mv >>= (\x -> (f x >>= g))
   
+-- mv :: State s a
+-- f :: a -> State s b
+-- g :: b -> State s c
