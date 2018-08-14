@@ -317,9 +317,28 @@ varLookUp name mem = case varLookUpList' name mem of
                                              else varLookUpList' name xs
 
 
-fn (x:xs) = (x+1) : xs;
-test'' = do 
-    {
-        x' <- getLine;
-        return x'
-    }                                    
+
+                                             
+
+-- -------------------------------------------------------------------------- --
+--   State Monad laws:                                                        --
+-- -------------------------------------------------------------------------- --
+
+-- Left identity:
+
+-- Monad law 1 states:
+
+  -- given: x :: a  and  g :: a -> State s b
+  -- return x >>= g  ==  g x
+
+  -- given: mv :: State s a  and  return :: a -> State s a
+  -- mv >>= return  ==  mv
+
+
+  -- Monad law 3 
+  -- This derivation is going to be a bit painful. If you skip it, you won't hurt my feelings. But anyway, here we go.
+
+  -- Recall the definition of monad law 3, in terms of the >>= operator:
+  
+--    (mv >>= f) >>= g  ==  mv >>= (\x -> (f x >>= g))
+  
