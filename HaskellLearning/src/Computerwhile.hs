@@ -22,3 +22,18 @@ eval' (Div x y) = case eval' x of
                     Just n -> case eval' y of
                                 Nothing -> Nothing
                                 Just m -> safediv n m
+
+
+
+
+eval'' :: Expr -> Maybe Int
+eval'' (Val n)   = return n
+eval'' (Div x y) = eval'' x >>= 
+                                (\n -> 
+                                    eval'' y >>= (\m -> safediv n m)
+                                )    
+    
+
+
+
+                                
