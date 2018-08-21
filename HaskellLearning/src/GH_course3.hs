@@ -345,3 +345,85 @@ varLookUp name mem = case varLookUpList' name mem of
 -- mv :: State s a
 -- f :: a -> State s b
 -- g :: b -> State s c
+
+
+-- evaluation IO Moned
+--    (mv >>= f) >>= g  ==  mv >>= (\x -> (f x >>= g))
+
+f' :: String -> IO()
+f' = \x -> putStrLn "hello "
+
+g' :: String -> IO()
+g' = \x -> putStrLn "world!"
+
+
+-- Left identity: return a >>= f  =  f a
+
+-- λ:return "hello" >>= putStrLn
+-- hello
+
+-- λ:putStrLn "hello"
+-- hello
+
+-- Right identity: m >>= return = m
+-- λ:putStrLn "hello" >>= return
+-- hello
+-- λ:putStrLn "hello"
+-- hello
+
+-- Associativity : (m >>= f) >>= g 
+
+-- λ:((putStrLn "Pure " ) >>= f')  >>= g'
+-- Pure
+-- hello
+-- world!
+
+-- m >>= (\x -> f x >>= g)
+-- λ:putStrLn "Pure "   >>= (\x -> ((putStrLn "hello ") >>= g'))
+-- Pure
+-- hello
+-- world!
+
+
+
+
+--    (mv >>= f) >>= g
+-- λ:(getLine  >>= \x -> putStrLn x) >>= g'
+-- hello
+-- hello
+--- world!
+
+--  mv >>= (\x -> (f x >>= g))
+-- λ:getLine  >>= (\x -> (putStrLn x >>= g'))
+-- hello
+-- hello
+-- world!
+
+a = 10
+
+f'' = \x -> Just(x+4)
+g'' = \x -> Just(x/2)
+
+-- a >>= f  =  f a -- left identity
+left_identity  = return(a) >>= f''
+left_identity' = f'' (a)
+
+-- λ:left_identity
+-- Just 14.0
+
+-- λ:left_identity'
+-- Just 14.0
+
+
+-- m >>= return = m -- right identity
+
+right_identity  = Just(a) >>= return
+right_identity' = Just(a)
+
+-- associativity
+--    (mv >>= f) >>= g
+assoc_left = (Just(a) >>= f'') >>= g''
+
+
+--  mv >>= (\x -> (f x >>= g))
+assoc_right = Just(a) >>= (\x -> (f'' x) >>= g'')
