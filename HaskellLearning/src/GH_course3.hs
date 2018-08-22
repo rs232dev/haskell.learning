@@ -427,3 +427,6 @@ assoc_left = (Just(a) >>= f'') >>= g''
 
 --  mv >>= (\x -> (f x >>= g))
 assoc_right = Just(a) >>= (\x -> (f'' x) >>= g'')
+
+simple_state :: State Int [Char]
+simple_state = State (\s -> ("value", s+1))
