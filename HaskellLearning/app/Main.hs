@@ -4,10 +4,10 @@ import Lib
 import Utils.Myutils
 import Utils.Start
 import GH_course
-import GH_course2
-import GH_course3
-import Computerwhile
-
+-- import GH_course2
+-- import GH_course3
+-- import Computerwhile
+import StateMonad
         
     {-- 
     
@@ -64,6 +64,9 @@ Prelude> :set prompt "\x03BB:"
 Leaving GHCi.
 
     --}
+
+
+
 
 main :: IO()      
 main = do
@@ -140,4 +143,7 @@ main = do
         --}
       
 --}
+
+
+
     
