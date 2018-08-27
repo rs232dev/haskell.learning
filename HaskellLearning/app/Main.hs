@@ -8,7 +8,10 @@ import GH_course
 -- import GH_course3
 -- import Computerwhile
 import StateMonad
-        
+import ReaderMonad
+import BasicTest
+import GH_Course4
+
     {-- 
     
      git clone https://github.com/rs232dev/haskell.learning.git

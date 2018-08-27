@@ -28,3 +28,6 @@ instance Monad (State s) where
 
 elab  = State (\x -> ("do", x+1)) >>= 
         \y -> State(\x -> (y++" ...some stuff!",x+10))
+
+  
+
