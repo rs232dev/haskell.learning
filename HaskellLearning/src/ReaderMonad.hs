@@ -2,8 +2,6 @@ module ReaderMonad where
 
 import Control.Monad.Reader
 
-
-
 -- In Haskell, our code is generally "pure", meaning functions can only 
 -- interact with the arguments passed to them. 
 -- This effectively means we cannot have global variables. We can have global
@@ -32,36 +30,60 @@ func2 = do
 -- loadEnv s = readFile s
 
 -- ========================================================================== --
+-- Example of Environment by argument passed through                         --
+-- ========================================================================== --
+
+func_environment_1 :: Environment -> String
+func_environment_1 env = "Result: " ++ (show (func_environment_2 env))
+
+func_environment_2 :: Environment -> String
+func_environment_2 env = (show (func_environment_3 env))
+
+func_environment_3 :: Environment -> Int
+func_environment_3 env = 2
+
+
+-- ========================================================================== --
 -- Example of Monad Reader (loadEnv' from Environment Record type)            --
 -- ========================================================================== --
 
-data Environment = Environment
-  { param1 :: String
-  , param2 :: String
-  , param3 :: String } deriving (Show)  
+data Environment = Connection{   
+    uri :: String
+  , usr :: String
+  , pwd :: String 
+} deriving (Show)  
 
-get_param1 :: Environment -> String  
-get_param1 (Environment p1 _ _) = p1  
+get_uri :: Environment -> String  
+get_uri (Connection p1 _ _) = p1  
 
-get_param2 :: Environment -> String  
-get_param2 (Environment _ p2 _) = p2
+get_usr :: Environment -> String  
+get_usr (Connection _ p2 _) = p2
 
-get_param3 :: Environment -> String  
-get_param3 (Environment _ _ p3) = p3
+get_pwd :: Environment -> String  
+get_pwd (Connection _ _ p3) = p3
 
-test_reader1 :: Reader Environment String
-test_reader1 = do
+func_reader_1 :: Reader Environment String
+func_reader_1 = do
     env <- ask        
-    p3<-test_reader2
-    return ("param1:"++ get_param1 env ++ " - " ++ p3)
+    p2<-func_reader_2
+    return ("uri:"++ get_uri env ++ " - " ++ p2)
 
-test_reader2 :: Reader Environment String
-test_reader2 = do
+func_reader_2 :: Reader Environment String
+func_reader_2 = do
+    env <- ask       
+    p3<-func_reader_3     
+    return ("usr:"++get_usr env ++ " - "++p3)
+
+func_reader_3 :: Reader Environment String
+func_reader_3 = do
     env <- ask            
-    return ("param3:"++get_param3 env)
+    return ("pwd:"++get_pwd env)    
 
 loadEnv' ::  String -> Environment
-loadEnv' s = Environment "Buddy" "Finklestein" "526-2928"
+loadEnv' s = Connection "Buddy" "Finklestein" "526-2928"
+
+-- convo = hello >>= \h -> (bye >>= \b -> return $ h ++ b)
+mrbind = func_reader_1 >>= \x -> (func_reader_2 >>= \y -> return $ "("++ x ++ " -- " ++ y++")")
 
 -- ========================================================================== --
 -- main                                                                       --
@@ -71,7 +93,8 @@ main :: IO ()
 main = do
   -- let env = loadEnv' "/home/corrado/dev/vscode.wks/haskell.learning/HaskellLearning/src/config.txt"
   let env = loadEnv' ""
-  let str = runReader test_reader1 env
+  let str = runReader func_reader_1 env
+  let x = ask env
   --let str = runReader func1 env
   print str
 
