@@ -12,6 +12,9 @@ import ReaderMonad
 import BasicTest
 import GH_Course4
 
+import Control.Monad.ST
+import Control.Monad.Reader
+
     {-- 
     
      git clone https://github.com/rs232dev/haskell.learning.git
@@ -65,6 +68,9 @@ GHCi, version 8.4.3: http://www.haskell.org/ghc/  :? for help
 Prelude> :set prompt "\x03BB:"
 λ::q
 Leaving GHCi.
+
+
+ghci -isrc:app app/Main.hs
 
     --}
 
