@@ -156,14 +156,14 @@ get_config (Just x) = x
 get_config Nothing  = Config "" "" 0
    
 
-elab  user = Reader' (\e ->  get_user (get_config (find_user user e) )) >>= 
-    \y -> Reader'(\e -> (y++ " -- "++ (get_password (get_config (find_user  user e)))))
+elab  user = Reader' (\e ->  show $ get_token (get_config (find_user user e) )) >>= 
+    \y -> Reader'(\e -> ("token:"++y++ " -- "++ (get_password (get_config (find_user  user e)))))
 
 -- elab  = Reader' (\e ->  get_user e ) >>=  \y -> Reader'(\e -> get_password e)
 -- *ReaderMonad> runReader' elab (loadConfig "")
 
-λ:runReader' (elab "Oliver") users
-"Oliver -- secret.oliver"
+-- λ:runReader' (elab "Oliver") users
+-- "Oliver -- secret.oliver"
 
 
 
