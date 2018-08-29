@@ -62,6 +62,7 @@ get_usr (Connection _ p2 _) = p2
 get_pwd :: Environment -> String  
 get_pwd (Connection _ _ p3) = p3
 
+
 func_reader_1 :: Reader Environment String
 func_reader_1 = do
     env <- ask        
@@ -84,6 +85,87 @@ loadEnv' s = Connection "Buddy" "Finklestein" "526-2928"
 
 -- convo = hello >>= \h -> (bye >>= \b -> return $ h ++ b)
 mrbind = func_reader_1 >>= \x -> (func_reader_2 >>= \y -> return $ "("++ x ++ " -- " ++ y++")")
+
+-- *ReaderMonad> runReader mrbind (loadEnv' "")
+-- "(uri:Buddy - usr:Finklestein - pwd:526-2928 -- usr:Finklestein - pwd:526-2928)"
+
+-- ========================================================================== --
+-- Monad Reader studying                                                      --
+-- ========================================================================== --
+data Config = Config{
+    user        :: String
+    , password  :: String 
+    , token     :: Int
+} deriving (Show)  
+
+users  =  [ Config "John"    "secret.john"    12345, 
+            Config "Charlie" "secret.charlie" 54321,
+            Config "Oliver"  "secret.oliver"  32123
+          ]
+
+find_user :: String -> [Config] -> Maybe Config
+find_user _ [] = Nothing
+find_user usr (x:xs)
+  |  usr == (get_user x) = Just x
+  | otherwise = find_user usr xs
+
+
+get_user :: Config -> String  
+get_user (Config p1 _ _) = p1  
+
+get_password :: Config -> String  
+get_password (Config _ p2 _) = p2
+
+get_token :: Config -> Int  
+get_token (Config _ _ p3) = p3
+
+
+loadConfig ::  String -> Config
+loadConfig s = Config "Buddy" "Finklestein" 12345
+
+
+newtype Reader' e a = Reader' (e -> a)
+
+runReader' :: Reader' e a  -> e  -> a
+runReader'    (Reader' r) e =  r e
+
+instance Functor (Reader' e) where
+    fmap = liftM
+
+instance Applicative (Reader' e) where
+    pure = return
+    (<*>) = ap    
+
+
+instance Monad (Reader' e) where
+    --  return    :: (Monad m) => a -> Reader a	
+    return x  =  Reader' (\e -> x)
+
+    --               __ m__  _a_         _ (a -> m b) _          _ m _  _ b_
+    --              /      /    /       /              /       /      /    /
+    --  (>>=)    :: Reader e  a     ->  (a -> Reader e b)    ->  Reader e  b
+    m >>= k  = Reader'  (\e -> let a  = runReader' m e
+                                   b  = k a
+                                   in runReader' b e)
+
+    -- reduced form of bind operator
+    --    m >>= k  = Reader' ( \e -> runReader' (k ( runReader' m e )) e)   
+
+get_config :: Maybe Config -> Config
+get_config (Just x) = x
+get_config Nothing  = Config "" "" 0
+   
+
+elab  user = Reader' (\e ->  get_user (get_config (find_user user e) )) >>= 
+    \y -> Reader'(\e -> (y++ " -- "++ (get_password (get_config (find_user  user e)))))
+
+-- elab  = Reader' (\e ->  get_user e ) >>=  \y -> Reader'(\e -> get_password e)
+-- *ReaderMonad> runReader' elab (loadConfig "")
+
+λ:runReader' (elab "Oliver") users
+"Oliver -- secret.oliver"
+
+
 
 -- ========================================================================== --
 -- main                                                                       --
