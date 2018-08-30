@@ -155,13 +155,13 @@ get_config :: Maybe Config -> Config
 get_config (Just x) = x
 get_config Nothing  = Config "" "" 0
    
-reader1 user = Reader' (\e ->  show $ get_token (get_config (find_user user e) ))
-reader2 user = Reader' (\e ->  get_password (get_config (find_user  user e)))
+reader1 user = Reader' (\e ->  "token:"++ (show $ get_token (get_config (find_user user e)) ))
+reader2 user y = Reader' (\e ->  y++" - password:"++get_password (get_config (find_user  user e)))
 
 elab  user = Reader' (\e ->  show $ get_token (get_config (find_user user e) )) >>= 
     \y -> Reader'(\e -> ("token:"++y++ " -- "++ (get_password (get_config (find_user  user e)))))
 
-elab' user = reader1 user >>=  \y -> reader2 user
+elab' user = reader1 user >>=  \y -> reader2 user y
 
 
 -- elab  = Reader' (\e ->  get_user e ) >>=  \y -> Reader'(\e -> get_password e)
