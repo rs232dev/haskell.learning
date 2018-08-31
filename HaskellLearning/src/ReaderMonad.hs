@@ -96,11 +96,12 @@ data Config = Config{
     user        :: String
     , password  :: String 
     , token     :: Int
+    , role      :: String
 } deriving (Show)  
 
-users  =  [ Config "John"    "secret.john"    12345, 
-            Config "Charlie" "secret.charlie" 54321,
-            Config "Oliver"  "secret.oliver"  32123
+users  =  [ Config "John"    "secret.john"    12345 "admin", 
+            Config "Charlie" "secret.charlie" 54321 "user",
+            Config "Oliver"  "secret.oliver"  32123 "manager"
           ]
 
 find_user :: String -> [Config] -> Maybe Config
@@ -111,17 +112,20 @@ find_user usr (x:xs)
 
 
 get_user :: Config -> String  
-get_user (Config p1 _ _) = p1  
+get_user (Config p1 _ _ _) = p1  
 
 get_password :: Config -> String  
-get_password (Config _ p2 _) = p2
+get_password (Config _ p2 _ _) = p2
 
 get_token :: Config -> Int  
-get_token (Config _ _ p3) = p3
+get_token (Config _ _ p3 _) = p3
+
+get_role :: Config -> String  
+get_role (Config _ _ _ p4) = p4
 
 
 loadConfig ::  String -> Config
-loadConfig s = Config "Buddy" "Finklestein" 12345
+loadConfig s = Config "Buddy" "Finklestein" 12345 "adm"
 
 
 newtype Reader' e a = Reader' (e -> a)
@@ -136,24 +140,26 @@ instance Applicative (Reader' e) where
     pure = return
     (<*>) = ap    
 
+return' x  =  Reader' (\e -> x)
 
 instance Monad (Reader' e) where
     --  return    :: (Monad m) => a -> Reader a	
     return x  =  Reader' (\e -> x)
 
+
     --               __ m__  _a_         _ (a -> m b) _          _ m _  _ b_
     --              /      /    /       /              /       /      /    /
     --  (>>=)    :: Reader e  a     ->  (a -> Reader e b)    ->  Reader e  b
     m >>= k  = Reader'  (\e -> let a  = runReader' m e
-                                   b  = k a
-                                   in runReader' b e)
+                                   n  = k a
+                                   in runReader' n e)
 
     -- reduced form of bind operator
     --    m >>= k  = Reader' ( \e -> runReader' (k ( runReader' m e )) e)   
 
 get_config :: Maybe Config -> Config
 get_config (Just x) = x
-get_config Nothing  = Config "" "" 0
+get_config Nothing  = Config "" "" 0 ""
    
 reader1 user = Reader' (\e ->  "token:"++ (show $ get_token (get_config (find_user user e)) ))
 reader2 user y = Reader' (\e ->  y++" - password:"++get_password (get_config (find_user  user e)))
@@ -169,6 +175,71 @@ elab' user = reader1 user >>=  \y -> reader2 user y
 
 -- λ:runReader' (elab "Oliver") users
 -- "Oliver -- secret.oliver"
+
+
+-- ----------------------------------------------------------------------
+-- Left identity: return a >>= f  =  f a
+-- ----------------------------------------------------------------------
+left_identity_0  = return ("identity:") >>= 
+                      (\y ->  Reader' (\e -> y++" password:"++
+                         get_password (get_config (find_user "Oliver" e))))
+
+-- runReader' left_identity_0 users
+-- "identity: password:secret.oliver"
+
+left_identity_1  = (\y -> 
+           Reader'(\e -> (y++" password:"++
+               get_password (get_config (find_user "Oliver" e))))) "identity:"
+
+-- runReader' left_identity_1 users
+-- "identity: password:secret.oliver"
+
+ 
+
+-- ----------------------------------------------------------------------
+-- Right identity: m >>= return = m
+-- ----------------------------------------------------------------------
+right_identity_0  =  Reader' (\e -> "password:"++get_password 
+                           (get_config (find_user "Oliver" e))) >>= return'
+
+--runReader' right_identity_0 users
+--"password:secret.oliver"
+
+right_identity_1  =  Reader' (\e -> "password:"++get_password 
+                                (get_config (find_user "Oliver" e)))
+
+-- runReader' right_identity_1 users
+-- "password:secret.oliver" 
+
+
+-- ----------------------------------------------------------------------
+-- Associativity : (m >>= f) >>= g = m >>= (\x -> f x >>= g)
+-- ----------------------------------------------------------------------
+assoc_0 user = (Reader' (\e -> "password:"++get_password (get_config (find_user user e)))  >>=  
+    (\k -> Reader' (\e -> k++" - token:"++ (show $ get_token (get_config (find_user user e))))))  >>= 
+                  (\z -> Reader' (\e -> z++" - role:"++get_role (get_config (find_user user e)))) 
+
+assoc_1 user = Reader' (\e -> "password:"++get_password (get_config (find_user  user e))) >>=
+    (\k -> Reader' (\e -> k++" - token:"++ (show $ get_token (get_config (find_user  user e))))  >>= 
+        (\z -> Reader' (\e -> z++" - role:"++get_role (get_config (find_user user e)))))
+             
+
+
+reader_password user = Reader' (\e -> "password:"++get_password (get_config (find_user user e)))
+reader_token    user = \x -> Reader' (\e -> x++" - t0ken:"++ (show $ get_token (get_config (find_user user e))))
+reader_role     user = \x -> Reader' (\e -> x++" - role:"++get_role (get_config (find_user user e)))
+
+
+--               ________ m _________  >>=  _______\x -> f x ___________  >>=   _____ g _____ 
+--              /                   /      /                           /       /             /
+assoc_left user = ((reader_password user) >>=  reader_token user) >>= reader_role user
+
+
+
+--               ________ m _________  >>=  _______\x -> f x ___________  >>=   _____ g _____ 
+--              /                   /      /                           /       /             /
+assoc_right user = reader_password user   >>= (\x -> ((reader_token user) x) >>= reader_role user)
+
 
 
 
