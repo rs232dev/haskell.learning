@@ -247,8 +247,8 @@ assoc_right user = reader_password user   >>= (\x -> ((reader_token user) x) >>=
 -- main                                                                       --
 -- ========================================================================== --
 
-main :: IO ()
-main = do
+main2 :: IO ()
+main2 = do
   -- let env = loadEnv' "/home/corrado/dev/vscode.wks/haskell.learning/HaskellLearning/src/config.txt"
   let env = loadEnv' ""
   let str = runReader func_reader_1 env

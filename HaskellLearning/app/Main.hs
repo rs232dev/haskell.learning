@@ -11,6 +11,8 @@ import StateMonad
 import ReaderMonad
 import BasicTest
 import GH_Course4
+import WriterCategory
+import ProductCoProduct
 
 import Control.Monad.ST
 import Control.Monad.Reader
@@ -62,6 +64,11 @@ Leaving GHCi.
 
 or:
 $  export LC_ALL="en_GB.utf8"
+
+or:
+
+export LC_ALL=en_US.UTF-8
+
 $ stack ghci --ghci-options Main.hs
 $::~/dev/haskell$ ghci
 GHCi, version 8.4.3: http://www.haskell.org/ghc/  :? for help
@@ -69,9 +76,11 @@ Prelude> :set prompt "\x03BB:"
 λ::q
 Leaving GHCi.
 
+//QUESTO!!!
 
+$: export LC_ALL="en_GB.utf8"
 ghci -isrc:app app/Main.hs
-
+Prelude> :set prompt "\x03BB:"
     --}
 
 
@@ -127,6 +136,13 @@ main = do
     putStrLn ("(deriving Eq Shape) :" ++  show ( eq_shape));
 
     putStrLn ("(show expression) :" ++  show ( expr1));
+
+
+
+    
+    
+
+
 
 
             {--

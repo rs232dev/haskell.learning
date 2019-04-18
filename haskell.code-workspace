@@ -3,5 +3,8 @@
         {
             "path": "HaskellLearning"
         }
-    ]
+    ],
+    "settings": {
+        "terminal.integrated.fontSize": 12
+    }
 }
