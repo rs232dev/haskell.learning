@@ -26,15 +26,9 @@ count s = (length s, "count ")
 
 trim :: String -> Writer String
 trim s = (dropWhile isSpace  s, "trim ")
-       
-x = (trim >=> upCase) >=> count
 
-
-{--
 x = (trim >=> upCase) >=> count
 y = trim >=> (upCase >=> count)
---}
-
 
 k = (trim >=> WriterCategory.return)
 z = (WriterCategory.return >=> trim)

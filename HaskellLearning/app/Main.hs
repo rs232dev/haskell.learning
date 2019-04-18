@@ -78,7 +78,7 @@ Leaving GHCi.
 
 //QUESTO!!!
 
-$: export LC_ALL="en_GB.utf8"
+export LC_ALL=en_US.UTF-8
 ghci -isrc:app app/Main.hs
 Prelude> :set prompt "\x03BB:"
     --}
