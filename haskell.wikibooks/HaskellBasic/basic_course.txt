@@ -4,15 +4,22 @@
 **                                     Table of contents                                          **
 ** ********************************************************************************************** **
 
-1) Create VsCode project
-2) Show   VsCode preferences
-3) Set Vscode terminal
-4) Haskell Main
-5) Haskell Comments
+   1) Create VsCode project
+   2) Show   VsCode preferences
+   3) Set Vscode terminal
+   4) Haskell Main
+   5) Haskell Comments
+   6) Cap_3_4 Variables_and_Functions
+   7) Cap_5 Type Basics
+   8) Cap_6 List and Tuples
+   9) Cap_7 Type Basics II
+  10) Cap_8 Building vocabulary
+  11) 
+
 
 
 -- ---------------------------------------------------------------------------------------------- --
---  1)  Create VsCode project                                                                     -- 
+--  1) Create VsCode project                                                                         -- 
 -- ---------------------------------------------------------------------------------------------- --
 
 host@hskuser:~/dev/vscode.wks/haskell.learning/haskell.wikibooks$ stack new HaskellBasic new-template
@@ -66,7 +73,7 @@ All done.
 
 
 -- ---------------------------------------------------------------------------------------------- --
---  2)  Create VsCode project                                                                     -- 
+-- 2) Show   VsCode preferences                                                                   -- 
 -- ---------------------------------------------------------------------------------------------- --
 
 VsCode Preferences:
@@ -89,7 +96,7 @@ Prelude> :set prompt "\x03BB:"
 
 
 -- ---------------------------------------------------------------------------------------------- --
---  4) Haskell Main                                                                               -- 
+-- 4) Haskell Main                                                                                -- 
 -- ---------------------------------------------------------------------------------------------- --
 
 module Main where
@@ -104,7 +111,7 @@ main = do
 
 
 -- ---------------------------------------------------------------------------------------------- --
---  5) Haskell Comments                                                                           -- 
+-- 5) Haskell Comments                                                                            -- 
 -- ---------------------------------------------------------------------------------------------- --    
 
 -- single line comment
@@ -116,9 +123,79 @@ main = do
 --  6) Cap_3_4 Variables_and_Functions                                                            -- 
 -- ---------------------------------------------------------------------------------------------- --    
 
-    6.1) Local definition
-    6.2) Prefix Infix operators  (4.3)
-    6.3) Boolean operations (4.4)
-    6.4) Guards (4.5)
+    - Local definition
+    - Prefix Infix operators
+    - Boolean operations
+    - Guards
 
-    
+-- ---------------------------------------------------------------------------------------------- --
+--  7) Cap_5 Type Basics                                                                          -- 
+-- ---------------------------------------------------------------------------------------------- --    
+
+    - Haskell is STRONGLY TYPED
+
+-- ---------------------------------------------------------------------------------------------- --
+--  8) Cap_6 List and Tuples                                                                      -- 
+-- ---------------------------------------------------------------------------------------------- --    
+    - List
+    - Building a List
+    - List of Lists
+    - Tuples
+    - Retrieve values
+    - Tuples within Tuples
+    - Polymorphic types
+
+-- ---------------------------------------------------------------------------------------------- --
+--  9) Cap_7 Type Basics II                                                                       -- 
+-- ---------------------------------------------------------------------------------------------- --        
+    - The Num class
+
+-- ---------------------------------------------------------------------------------------------- --
+--  10) Cap_8 Building vocabulary                                                                 -- 
+-- ---------------------------------------------------------------------------------------------- --        
+    - Function Composition:
+
+        Function Composition is a really simply concept.
+        It just means applying one function to a value and then applying another function to the
+        result.
+
+    - Prelude and hierarchical libraries:
+
+        Prelude is the core library loaded by default in every Haskell program.
+
+    Alongside with Prelude, there are the hierarchical libraries, which provide a much wider
+    range of functionality.
+    Although they are provided by default with GHC, they are not loaded automatically like
+    Prelude.
+    Rather they are distributed as modules, which must be imported into your program.
+
+    ex.
+
+    import Data.List
+
+
+    For quick GHCi tests, just enter :m +Data.List at the command line to load that module.
+
+    Prelude> :m +Data.List
+    Prelude Data.List> :t permutations    
+    permutations :: [a] -> a
+
+    Resources:
+
+    https://en.wikibooks.org/wiki/..%2FHierarchical%20libraries
+    http://www.haskell.org/onlinereport/standard-prelude.html
+    http://www.haskell.org/ghc/docs/latest/html/libraries/index.html
+    http://www.haskell.org/hoogle
+    https://hackage.haskell.org/
+    http://www.haskell.org/cabal/users-guide/
+    http://holumbus.fh-wedel.de/hayoo/hayoo.html
+
+
+-- ---------------------------------------------------------------------------------------------- --
+--  11) Cap_9 Next Steps                                                                          -- 
+-- ---------------------------------------------------------------------------------------------- --       
+
+
+
+
+
