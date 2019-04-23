@@ -2,9 +2,16 @@
     "folders": [
         {
             "path": "HaskellLearning"
+        },
+        {
+            "path": "haskell.wikibooks"
         }
     ],
     "settings": {
-        "terminal.integrated.fontSize": 12
+        "terminal.integrated.fontSize": 12,
+        "ca65.cc65": "/home/corrado/apps/cc65/bin",
+        "ca65.cc65.options": "",
+        "ca65.vscodeenv": "linux",
+        "ca65.buildenv": "linux"
     }
 }
