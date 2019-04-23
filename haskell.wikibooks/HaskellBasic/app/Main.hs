@@ -1,6 +1,11 @@
 module Main where
 
 import Lib
+import Cap_3_4.Variables_and_Functions
 
 main :: IO ()
-main = someFunc
+main = do
+
+    putStrLn "haskell basic course ";    
+
+
