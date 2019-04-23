@@ -49,7 +49,7 @@ Total number of user packages considered: 1
 Writing configuration to file: HaskellBasic/stack.yaml
 All done.
 
----------------------------------------------------------------------------------
+
 
 export LC_ALL=en_US.UTF-8
 ghci -isrc:app app/Main.hs
