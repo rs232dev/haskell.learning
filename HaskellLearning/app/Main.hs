@@ -20,7 +20,7 @@ import Control.Monad.Reader
     {-- 
     
      git clone https://github.com/rs232dev/haskell.learning.git
-    git remote add origin https://github.com/rs232dev/haskell.learning.git
+    git remote add origin https://github.com/rs232dev/haskell.learning.gitgit
     ...
     git add --all
     git commit -m "clean"
