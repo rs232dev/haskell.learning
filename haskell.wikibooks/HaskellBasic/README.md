@@ -27,6 +27,7 @@ stack new HaskellBasic new-template -p "author-email:value" -p "author-name:valu
 
 Looking for .cabal or package.yaml files to use to init the project.
 Using cabal packages:
+
 - HaskellBasic/
 
 Selecting the best among 15 snapshots...
@@ -49,8 +50,9 @@ Total number of user packages considered: 1
 Writing configuration to file: HaskellBasic/stack.yaml
 All done.
 
-
-
 export LC_ALL=en_US.UTF-8
+
 ghci -isrc:app app/Main.hs
+
 Prelude> :set prompt "\x03BB:"
+
