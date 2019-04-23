@@ -14,12 +14,14 @@
    8) Cap_6 List and Tuples
    9) Cap_7 Type Basics II
   10) Cap_8 Building vocabulary
-  11) 
+  11) Cap_9 Next Steps + Pattern Matching     
+  12) Cap_10 Simple input and ouput
+  13) Cap_13 Recursion
 
 
 
 -- ---------------------------------------------------------------------------------------------- --
---  1) Create VsCode project                                                                         -- 
+--  1) Create VsCode project                                                                      -- 
 -- ---------------------------------------------------------------------------------------------- --
 
 host@hskuser:~/dev/vscode.wks/haskell.learning/haskell.wikibooks$ stack new HaskellBasic new-template
@@ -194,6 +196,97 @@ main = do
 -- ---------------------------------------------------------------------------------------------- --
 --  11) Cap_9 Next Steps                                                                          -- 
 -- ---------------------------------------------------------------------------------------------- --       
+
+    - if/then/else
+    - if/then/else by Guards
+    - Pattern Matching
+    - Tuples and Lists Pattern
+    - let bindings
+
+-- ---------------------------------------------------------------------------------------------- --
+--  12) Cap_10 Simple input and ouput                                                             -- 
+-- ---------------------------------------------------------------------------------------------- --       
+
+    -- ----------------------
+    -- Back to the real world
+    -- ----------------------
+    
+      Prelude> putStrLn "Hello, World!"
+
+    putStrLn is one of the standard Prelude tools. As the "putStr" part of the name suggests,
+    it takes a String as an argument and prints it to the screen. We could use putStr on its
+    own, but we usually include the ”Ln” part so to also print a line break. Thus, whatever else
+    is printed next will appear on a new line.
+
+    So now you should be thinking, "what is the type of the putStrLn function?" 
+      
+    It takes a String and gives... um... what? What do we call that? 
+      
+    The program doesn't get something back that it can use in another function. 
+      
+    Instead, the result involves having the computer change the screen. 
+    In other words, it does something in the world outside of the program.
+
+    What type could that have? Let's see what GHCi tells us:
+
+        Prelude> :t putStrLn
+        putStrLn :: String -> IO ()
+
+    "IO" stands for "input and output"
+
+    Wherever there is IO in a type, interaction with the world outside the program is involved.
+    We'll call these IO values actions. 
+      
+    The other part of the IO type, in this case (), is the type of the return value of the action;
+    that is, the type of what it gives back to the program (as opposed to what it does outside 
+    the program). 
+      
+      () (pronounced as ”unit”) is a type that only contains one value also called () 
+         (effectively a tuple with zero elements).
+
+    Since putStrLn sends output to the world but doesn't return
+    anything to the program, () is used as a placeholder. We might read IO () as 
+    "action which returns ()".    
+
+    A few more examples of when we use IO:
+    
+    - print a string to the screen
+    - read a string from a keyboard
+    - write data to a file
+    - read data from a file
+
+    A complete Haskell program is actually a big IO action. In a compiled program, this action 
+    is called main and has type IO (). From this point of view, to write a Haskell program is 
+    to combine actions and functions to form the overall action main that will be executed when 
+    the program is run. The compiler takes care of instructing the computer on how to do this.    
+
+    -- ----------------------
+    -- do notation
+    -- ----------------------
+
+    do notation provides a convenient means of putting actions together (which is essential in
+    doing useful things with Haskell).
+
+-- ---------------------------------------------------------------------------------------------- --
+--  13) Cap_13 Recursion                                                                          -- 
+-- ---------------------------------------------------------------------------------------------- -- 
+
+    - Recursion:
+       Recursion is the idea of defining a function in terms of itself.
+
+    - List based Recursion       
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
