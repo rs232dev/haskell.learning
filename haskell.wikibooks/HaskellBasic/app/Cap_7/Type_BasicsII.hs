@@ -1,10 +1,10 @@
 module Cap_7.Type_BasicsII where
 
 
-    -- -------------------------------------------------------------------------
-    -- The Num class                                                      --
-    -- -------------------------------------------------------------------------
-    {-- 
+-- ========================================================================== --
+-- The Num class                                                              --
+-- ========================================================================== --
+{-- 
         In order to capture such generality in the simplest way possible we
         would like to have a very general Number type in Haskell.
 
@@ -17,9 +17,9 @@ module Cap_7.Type_BasicsII where
         -- Main> :t (+)
         --(+) :: Num a => a -> a -> a
 
-    --}
+--}
 
-    {-- 
+{-- 
         Int:
             corresponds to the plain integer type found in most languages. 
             It has fixed maximum and minimum values that depend on a computer's 
@@ -38,9 +38,9 @@ module Cap_7.Type_BasicsII where
 
         Several other number types are available, but these cover most in 
         everyday tasks.    
-    --}
+--}
     
-    my_integral_division:: (Fractional a) => a -> a -> a
-    my_integral_division x y =  (x/y)
+my_integral_division:: (Fractional a) => a -> a -> a
+my_integral_division x y =  (x/y)
 
     
