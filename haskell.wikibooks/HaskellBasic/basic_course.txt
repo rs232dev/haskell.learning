@@ -18,6 +18,9 @@
   12) Cap_10 Simple input and ouput
   13) Cap_12 Recursion
   14) Cap_13 More about Lists
+  15) Cap_14 List Processing 
+  16) Cap_15.Type_Declarations 
+  
 
 
 
@@ -297,8 +300,6 @@ main = do
         - scans
         - filter
         - List comprehensions
- 
-
 
 -- ---------------------------------------------------------------------------------------------- --
 --  16) Cap_15.Type_Declarations                                                                  -- 
@@ -315,9 +316,23 @@ main = do
     - data and constructor functions
     - deconstructing types
     - type for making type synonyms
-    
 
-      
+-- ---------------------------------------------------------------------------------------------- --
+--  17) Cap_16.Pattern_Matching                                                                   -- 
+-- ---------------------------------------------------------------------------------------------- --      
+
+    - Pattern Matching
+
+    Some languages like Perl and Python use term pattern matching for matching regular expression
+    against strings.
+    The pattern matching we are referring to in this chapter is something completely different.
+    Here pattern matching is used to deconstruct values according  to their type specification.
+
+    - Tuple constructors
+    - Matching literal values
+
+    - Syntax_Tricks
+        - As-patterns
 
 
 

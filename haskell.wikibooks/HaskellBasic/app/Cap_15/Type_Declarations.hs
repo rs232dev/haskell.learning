@@ -13,8 +13,14 @@ module Cap_15.Type_Declarations where
 -- type names and constructor functions must start with capital letters       --
 -- -------------------------------------------------------------------------- --
 
+--
+--   type constructor    ____ data constructor
+--        /             /
+--       /             /
 data Anniversary = Birthday String Int Int Int
                 |  Wedding  String String Int Int Int
+--                    \
+--                     \____ data constructor
 
 -- This declares a new data type Anniversary  which can be either a Birthday 
 -- or a Wedding.

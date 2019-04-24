@@ -13,6 +13,9 @@ import Cap_12.Recursion
 import Cap_13.More_about_Lists
 import Cap_14.List_Processing
 import Cap_15.Type_Declarations
+import Cap_16.Pattern_Matching
+import Cap_16.Syntax_Tricks
+
 
 main :: IO ()
 main = do
