@@ -291,7 +291,36 @@ main = do
 --  15) Cap_14 List Processing                                                                    -- 
 -- ---------------------------------------------------------------------------------------------- --      
 
-    - Folds (foldr)
+    - Folds 
+        - foldr
+        - foldl
+        - scans
+        - filter
+        - List comprehensions
+ 
+
+
+-- ---------------------------------------------------------------------------------------------- --
+--  16) Cap_15.Type_Declarations                                                                  -- 
+-- ---------------------------------------------------------------------------------------------- --      
+
+    You're not restricted to working with just the types provided by default with the language.
+    
+    Haskell has three basic ways to declare a new type:
+
+    - The data declaration, which defines new data types.
+    - The type declaration for type synonyms, that is, alternative names for existing types.
+    - The newtype declaration, which defines new data types equivalent to existing ones.
+
+    - data and constructor functions
+    - deconstructing types
+    - type for making type synonyms
+    
+
+      
+
+
+
 
 
 
