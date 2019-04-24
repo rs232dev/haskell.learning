@@ -1,4 +1,4 @@
-module Cap_12.SimpleIO where
+module Cap_10.SimpleIO where
 
 -- -------------------------------------------------------------------------- --
 -- Back to the real world                                                     --

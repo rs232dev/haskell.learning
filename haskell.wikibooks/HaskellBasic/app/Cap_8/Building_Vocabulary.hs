@@ -1,4 +1,4 @@
-module Cap_10.Building_Vocabulary where
+module Cap_8.Building_Vocabulary where
 
 
 -- -------------------------------------------------------------------------

@@ -16,7 +16,8 @@
   10) Cap_8 Building vocabulary
   11) Cap_9 Next Steps + Pattern Matching     
   12) Cap_10 Simple input and ouput
-  13) Cap_13 Recursion
+  13) Cap_12 Recursion
+  14) Cap_13 More about Lists
 
 
 
@@ -268,13 +269,21 @@ main = do
     doing useful things with Haskell).
 
 -- ---------------------------------------------------------------------------------------------- --
---  13) Cap_13 Recursion                                                                          -- 
+--  13) Cap_12 Recursion                                                                          -- 
 -- ---------------------------------------------------------------------------------------------- -- 
 
     - Recursion:
        Recursion is the idea of defining a function in terms of itself.
 
-    - List based Recursion       
+    - List based Recursion 
+
+-- ---------------------------------------------------------------------------------------------- --
+--  14) Cap_13 More about Lists                                                                   -- 
+-- ---------------------------------------------------------------------------------------------- --           
+
+    - map function
+
+
 
 
 

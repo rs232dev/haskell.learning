@@ -1,4 +1,4 @@
-module Cap_13.Recursion where
+module Cap_12.Recursion where
 
 -- -------------------------------------------------------------------------- --
 -- Recursion                                                                  --
@@ -23,4 +23,11 @@ length'' (x:xs) = 1 + length'' xs
 -- Main> length'' [9,8,7,6,5]
 -- 5
 
+-- from Prelude:
+-- (++) []     ys = ys
+-- (++) (x:xs) ys = x : xs ++ ys
+
+list_concat = [1,2,3] ++ [7,8,9]
+-- Main> list_concat 
+-- [1,2,3,7,8,9]
 
