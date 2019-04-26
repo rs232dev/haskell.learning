@@ -18,7 +18,7 @@ import Cap_16.Syntax_Tricks
 import Cap_17.Control_Structures
 import Cap_18.More_on_Functions
 import Cap_18.Anonymous_Functions 
-
+import Cap_18.Operators_and_Sections
 
 main :: IO ()
 main = do

@@ -354,8 +354,9 @@ main = do
         Here, sumStr calls addStr function:
 
     - Anonymous_Functions - lambdas
+    - Operators
 
-        
+
 
 
 
