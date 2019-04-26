@@ -21,6 +21,7 @@ import Cap_18.Anonymous_Functions
 import Cap_18.Operators_and_Sections
 import Cap_19.High_Order_Functions
 import Cap_24.More_on_Datatypes
+import Cap_26.Classes_and_Types
 
 
 main :: IO ()

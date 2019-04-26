@@ -26,6 +26,7 @@
   20) Cap_19.High_Order_Functions
   21) Cap_22.Modules
   22) Cap_24.More_on_datatypes
+  23) Cap_26.Classes_and_Types
 
 
 -- ---------------------------------------------------------------------------------------------- --
@@ -520,5 +521,18 @@ otherwise.
     - Named Fields (Record Syntax)
     - Parametrized_Types
 
+-- ---------------------------------------------------------------------------------------------- --
+-- 23) Cap_26.Classes_and_Types                                                                   --  
+-- ---------------------------------------------------------------------------------------------- --    
+
+    - Classes and types 
+    - Classes and instances
+    - Deriving
+    - Class inheritance
+    - Type constraints
+
     
+
+
+
 
