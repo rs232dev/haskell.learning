@@ -23,7 +23,9 @@
   17) Cap_16.Pattern_Matching   
   18) Cap_17.Control_Structures
   19) Cap_18.More_on_Functions 
-
+  20) Cap_19.High_Order_Functions
+  21) Cap_22.Modules
+  22) Cap_24.More_on_datatypes
 
 
 -- ---------------------------------------------------------------------------------------------- --
@@ -356,28 +358,167 @@ main = do
     - Anonymous_Functions - lambdas
     - Operators
 
+-- ---------------------------------------------------------------------------------------------- --
+--  20) Cap_19.High_Order_Functions                                                               --
+-- ---------------------------------------------------------------------------------------------- --
+
+    A function that takes another function (or several functions) as an argument is called a
+    higher-order function.
+
+-- ---------------------------------------------------------------------------------------------- --
+--  21) Cap_22.Modules                                                                            --
+-- ---------------------------------------------------------------------------------------------- --
+Haskell modules 2 are a useful way to group a set of related functionalities into a single 
+package and manage different functions that may have the same names. 
+The module definition is the first thing that goes in your Haskell file.
+A basic module definition looks like: 
+
+      module YourModule where
+
+Note that:
+
+    1. the name of the module begins with a capital letter;
+    2. each file contains only one module.      
+
+The name of the file is the name of the module plus the .hs file extension. 
+Any dots '.' in the module name are changed for directories.
+
+    - -------------------
+    - Qualified imports
+    - -------------------
+
+So the module YourModule would be in the file YourModule.hs while a module Foo.Bar would 
+be in the file Foo/Bar.hs or Foo\Bar.hs. 
+Since the module name must begin with a capital letter, the file name must also start with 
+a capital letter.    
+
+import Data.Char (toLower, toUpper) -- import only the functions toLower and toUpper from Data.Char
+import Data.List                    -- import everything exported from Data.List
+import MyModule                     -- import everything exported from MyModule
+
+Imported datatypes are specified by their name, followed by a list of imported constructors
+in parenthesis. For example:
+
+import Data.Tree (Tree(Node)) -- import only the Tree data type and its Node constructor 
+                              -- from Data.Tree
+
+What if you import some modules that have overlapping definitions? Or if you import a
+module but want to overwrite a function yourself? 
+
+There are three ways to handle these cases: 
+
+    Qualified imports, hiding definitions, and renaming imports.
+
+Qualified imports:
+
+Say MyModule and MyOtherModule both have a definition for remove_e, which removes
+all instances of e from a string. However, MyModule only removes lower-case e's, and
+MyOtherModule removes both upper and lower case. In this case the following code is
+ambiguous:
+
+import MyModule
+import MyOtherModule
+
+-- someFunction puts a c in front of the text, and removes all e's from the rest
+
+someFunction :: String -> String
+someFunction text = 'c' : remove_e text
+
+It isn't clear which remove_e is meant! To avoid this, use the qualified keyword:
+
+import qualified MyModule
+import qualified MyOtherModule
+
+-- Will work, removes lower case e's
+someFunction text = 'c' : MyModule.remove_e text 
+
+ -- Will work, removes all e's
+someOtherFunction text = 'c' : MyOtherModule.remove_e text
+
+ -- Won't work as there is no remove_e defined
+someIllegalFunction text = 'c' : remove_e text
+
+In the latter code snippet, no function named remove_e is available at all. 
+When we do qualified imports, all the imported values include the module names
+as a prefix. 
+Incidentally, you can also use the same prefixes even if you did a regular 
+import (in our example, MyModule.remove_e works even if the "qualified" keyword 
+isn't included).
+
+    - -------------------
+    - Hiding definitions
+    - -------------------
+
+Now suppose we want to import both MyModule and MyOtherModule, but we know for sure
+we want to remove all e's, not just the lower cased ones. 
+It will become really tedious to add MyOtherModule before every call to remove_e. 
+Can't we just exclude the remove_e from MyModule?
+
+import MyModule hiding (remove_e)
+import MyOtherModule
+
+someFunction text = 'c' : remove_e text
+
+This works because of the word hiding on the import line. 
+Whatever follows the "hiding" keyword will not be imported. 
+Hide multiple items by listing them with parentheses and comma-separation:
+
+import MyModule hiding (remove_e, remove_f)
+
+Note that algebraic datatypes and type synonyms cannot be hidden. These are always
+imported. If you have a datatype defined in multiple imported modules, you must use
+qualified names.
+
+    - -------------------
+    - Renaming imports
+    - -------------------
+
+In this case, both the functions in MyModule and the functions in 
+MyCompletelyDifferentModule can be prefixed with My:
+
+import MyModule as My
+import MyCompletelyDifferentModule as My
+
+    - -------------------
+    - Exporting
+    - -------------------
+
+How can we decide which functions are exported and which stay "internal"?
+
+module MyModule (remove_e, add_two) where
+
+add_one blah = blah + 1
+remove_e text = filter (/= 'e') text
+add_two blah = add_one . add_one $ blah
+
+In this case, only remove_e and add_two are exported. 
+
+While add_two is allowed to make use of add_one, functions in modules that
+import MyModule cannot use add_one directly, as it isn't exported.
+
+Datatype export specifications are written similarly to import. You name the type, and
+follow with the list of constructors in parenthesis:
+
+module MyModule2 (Tree(Branch, Leaf)) where
+
+data Tree a = Branch {left, right :: Tree a}
+| Leaf a
 
 
+In this case, the module declaration could be rewritten "MyModule2 (Tree(..))", declaring
+that all constructors are exported.
 
+Maintaining an export list is good practice not only because it reduces namespace pollu-
+tion but also because it enables certain compile-time optimizations 5 which are unavailable
+otherwise.
 
+-- ---------------------------------------------------------------------------------------------- --
+-- 22) Cap_24.More_on_datatypes                                                                   --  
+-- ---------------------------------------------------------------------------------------------- --
 
-      
+    - Enumerations
+    - Named Fields (Record Syntax)
+    - Parametrized_Types
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 

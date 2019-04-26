@@ -19,6 +19,9 @@ import Cap_17.Control_Structures
 import Cap_18.More_on_Functions
 import Cap_18.Anonymous_Functions 
 import Cap_18.Operators_and_Sections
+import Cap_19.High_Order_Functions
+import Cap_24.More_on_Datatypes
+
 
 main :: IO ()
 main = do
