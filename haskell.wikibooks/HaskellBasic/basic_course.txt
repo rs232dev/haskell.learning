@@ -22,6 +22,7 @@
   16) Cap_15.Type_Declarations 
   17) Cap_16.Pattern_Matching   
   18) Cap_17.Control_Structures
+  19) Cap_18.More_on_Functions 
 
 
 
@@ -339,8 +340,22 @@ main = do
 --  18) Cap_17.Control_Structures                                                                 --
 -- ---------------------------------------------------------------------------------------------- --
     - if and guards revisited
+    - Embedding if expressions
+    - case expressions
+    - Controlling actions, revisited
 
+-- ---------------------------------------------------------------------------------------------- --
+--  19) Cap_18.More_on_Functions                                                                  --
+-- ---------------------------------------------------------------------------------------------- --
 
+    - let and where:
+
+        As discussed in earlier chapters, let and where are useful in local function definitions. 
+        Here, sumStr calls addStr function:
+
+    - Anonymous_Functions - lambdas
+
+        
 
 
 

@@ -16,6 +16,9 @@ import Cap_15.Type_Declarations
 import Cap_16.Pattern_Matching
 import Cap_16.Syntax_Tricks
 import Cap_17.Control_Structures
+import Cap_18.More_on_Functions
+import Cap_18.Anonymous_Functions 
+
 
 main :: IO ()
 main = do
