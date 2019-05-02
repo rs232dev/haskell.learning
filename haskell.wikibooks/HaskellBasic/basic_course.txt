@@ -27,7 +27,8 @@
   21) Cap_22.Modules
   22) Cap_24.More_on_datatypes
   23) Cap_26.Classes_and_Types
-
+  24) Cap_27.Functor_class
+  25) Cap_29_PrologueIO_ApplicativeFunctor
 
 -- ---------------------------------------------------------------------------------------------- --
 --  1) Create VsCode project                                                                      -- 
@@ -531,8 +532,176 @@ otherwise.
     - Class inheritance
     - Type constraints
 
+-- ---------------------------------------------------------------------------------------------- --
+-- 24) Cap_27.Functor_class                                                                       --
+-- ---------------------------------------------------------------------------------------------- --
+
+    - Introducing Functor
+
+    Functor is a Prelude class for types which can be mapped over. It has a single method, called
+    fmap.
     
+    The class is defined as follows:
+
+        class Functor f where
+            fmap :: (a -> b) -> f a -> f b
+
+    The usage of the type variable f can look a little strange at first. Here, f is a parametrized
+    data type.
+
+    Let's consider an instance of Functor: By replacing f with Maybe we get the following signature
+    for fmap...
+    
+        fmap :: (a -> b) -> Maybe a -> Maybe b
+        
+    ... which fits the natural definition:
+
+    instance Functor Maybe where
+        fmap f Nothing = Nothing
+        fmap f (Justx) = Just (f x)
+
+
+    The Functor instance for lists (also in Prelude) is simple:
+    
+    instance Functor [] where 
+        fmap = map
+    
+    ... and if we replace
+    
+    f with [] in the fmap signature, we get the familiar type of map.
+    
+    So, fmap is a generalization of map for any parametrized data type.
+
+        map :: (a -> b) -> [a] -> [b]
+
+
+    Naturally, we can provide Functor instances for our own data types.  
+    In particular, treeMap can be promptly relocated to an instance:
+
+    instance Functor Tree where
+        fmap f (Leaf x) = Leaf (f x)
+        fmap f (Branch left right) = Branch (fmap f left) (fmap f right)
+
+
+    - The Functor Laws
+
+        When providing a new instance of Functor, you should ensure it satisfies
+        the two functor laws.    
+
+        * The first law is:
+            
+            fmap id = id
+        
+        id is the identity function, which returns its argument unaltered. 
+        The first law states that mapping id over a functorial value must
+        return the functorial value unchanged.
+
+
+        * Next, the second law:
+
+            fmap (g . f) = fmap g . fmap f
+
+
+        It states that it should not matter whether we map a composed 
+        function or first map one function and then the other 
+        (assuming the application order remains the same in both cases).
 
 
 
+-- ---------------------------------------------------------------------------------------------- --
+-- 25) Cap_29_PrologueIO_ApplicativeFunctor                                                       --
+-- ---------------------------------------------------------------------------------------------- --
 
+    - -------------------------
+    - Applicative
+    - -------------------------
+
+    Main> :m +Text.Read
+    Main Text.Read> 
+
+    Main Text.Read> :t readMaybe
+    
+        readMaybe :: Read a => String -> Maybe a
+
+
+    readMaybe provides a simple way of converting strings into Haskell values. 
+    If the provided string has the correct format to be read as a value of type a, readMaybe
+    gives back the converted value wrapped in Just; otherwise, the result is Nothing:
+
+    To use readMaybe, we need to specify which type we are trying to read. Most of the time,
+    that would be done through a combination of type inference and the signatures in our code. 
+
+    Occasionally, however, it is more convenient to just slap in a type annotation rather than
+    writing down a proper signature. For instance, 
+    in the first example above the :: Maybe Integer in readMaybe "3" :: Maybe Integer
+    says that the type of readMaybe  "3" is Maybe Integer.
+
+
+    Main Text.Read> readMaybe "3" :: Maybe Integer
+    Just 3
+
+    Main Text.Read> readMaybe "hello" :: Maybe Integer
+    Nothing
+
+    - -------------------------
+    - Application in functors
+    - -------------------------
+        - see code.
+
+    - -------------------------
+    - IO
+    - -------------------------
+
+        - getLine
+
+        Main Text.Read> :t getLine
+        getLine :: IO String        
+
+        Using what we learned since then, we can now see that IO is a type constructor with one
+        type variable, which happens to be instantiated as String in the case of getLine.
+
+        That, however, doesn't get to the root of the issue: what does IO String really mean, and what
+        is the difference between that and plain old String?
+
+    - -------------------------
+    - Referential transparency
+    - -------------------------
+
+    A key feature of Haskell is that all expressions we can write are 
+    referentially transparent.
+
+    That means we can replace any expression whatsoever by its value without
+    changing the behaviour of the program. 
+    For instance, consider this very simple program:
+
+    addExclamation :: String-> String
+    addExclamation s = s ++ "!"
+
+
+    Given that addExclamation s = s ++ "!", we can rewrite main so that it doesn't mention
+    addExclamation. All we have to do is replacing s by "Hello" in the right-hand side of 
+    the addExclamation definition and then replacing addExclamation "Hello!" by the resulting
+    expression. As advertised, the program behaviour does not change_
+
+    test_addExclamation' = putStrLn ("Hello" ++ "!")
+    test_addExclamation' 
+    Hello!
+
+
+    Now, suppose that the type of getLine were String. 
+    In that case, we would be able to use it as the argument to addExclamation, as in:
+
+    -- Not actual code.
+    test_addExclamation'' = putStrLn (addExclamation getLine)
+
+    In that case, however, a new question would spring forth: 
+    if getLine is a String, which String is it? 
+    
+    There is no satisfactory answer: it could be "Hello", "Goodbye", or whatever else the 
+    user chooses to type at the terminal. And yet, replacing getLine by any String breaks 
+    the program, as the user would not be able to type the input string at the terminal any longer. 
+    
+    Therefore getLine having type String would cause referential transparency to be broken.
+
+
+    
