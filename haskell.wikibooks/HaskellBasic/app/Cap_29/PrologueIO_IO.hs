@@ -84,13 +84,16 @@ interactiveSumming' = do
 --
 --     fmap (+) (Maybe a)
 --
--- example
+-- example:
 -- Main Text.Read> f1 = (fmap (+) (Just 7)) 
 -- Main Text.Read> :t f1
 -- f1 :: Num a => Maybe (a -> a)
 --
--- then we apply the wrapped function Maybe (a -> a) by <*>:
--- 
+-- 4.2) then we apply the wrapped function Maybe (a -> a) by <*>:
+--               /
+--  (+) <$> mx <*> my :: Maybe Double of
+--
+-- example:
 -- Main Text.Read> :t f1
 -- f1 :: Num a => Maybe (a -> a)
 -- Main Text.Read> f1 <*> Just(2)
