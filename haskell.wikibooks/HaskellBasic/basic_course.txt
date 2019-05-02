@@ -28,9 +28,10 @@
   22) Cap_24.More_on_datatypes
   23) Cap_26.Classes_and_Types
   24) Cap_27.Functor_class
-  25) Cap_29_PrologueIO_ApplicativeFunctor
-  26) Cap_29_PrologueIO_IO + Applicatives_tutorial
-  
+  25) Cap_29.PrologueIO_ApplicativeFunctor
+  26) Cap_29.PrologueIO_IO + Applicatives_tutorial
+  27) Cap_30.Monads
+
 
 -- ---------------------------------------------------------------------------------------------- --
 --  1) Create VsCode project                                                                      -- 
@@ -611,7 +612,7 @@ otherwise.
 
 
 -- ---------------------------------------------------------------------------------------------- --
--- 25) Cap_29_PrologueIO_ApplicativeFunctor                                                       --
+-- 25) Cap_29.PrologueIO_ApplicativeFunctor                                                       --
 -- ---------------------------------------------------------------------------------------------- --
 
     - -------------------------
@@ -748,11 +749,137 @@ out to be, apply readMaybe on it".
 -- fmap ( String -> Maybe a) (IO String) -> (IO  String)
 
 -- ---------------------------------------------------------------------------------------------- --
--- 26) Cap_29_PrologueIO_IO + Applicatives_tutorial                                               --
+-- 26) Cap_29.PrologueIO_IO + Applicatives_tutorial                                               --
 -- ---------------------------------------------------------------------------------------------- --
 
         - <$>
         - <*>
+-- ---------------------------------------------------------------------------------------------- --
+-- 27) Cap_30.Monads                                                                              --
+-- ---------------------------------------------------------------------------------------------- --
+
+    - -------------------------
+    - Monads:
+    - -------------------------
+
+    Historically, monads were introduced into Haskell to perform input and output – that is,
+    I/O operations of the sort we dealt with in the Simple input and output.
+    A predetermined execution order is crucial for things like reading and writing files, 
+    and monadic operations lend themselves naturally to sequencing. 
+    However, monads are by no means limited to input and output.
+
+    They can be used to provide a whole range of features, such as exceptions, state, non-determinism, 
+    continuations, coroutines, and more.
+
+    - -------------------------
+    - Definition:
+    - -------------------------
+
+        A monad is defined by three things:
+
+        * a type constructor m;
+        * a function return;
+        * an operator (>>=) which is pronounced "bind".
+
+    The function and operator are methods of the Monad type class and have types.
+
+    return :: a -> m a
+    (>>=)  :: m a -> (a -> m b) -> m b
+
+    and are required to obey three laws that will be explained later on.    
+
+    For a concrete example, take the Maybe monad. 
+    
+    The type constructor is:
+
+     m = Maybe
+     
+     while return and (>>=) are defined like this:
+
+    return :: a -> Maybe a
+    return x  = Just x
+    
+    (>>=)  :: Maybe a -> (a -> Maybe b) -> Maybe b
+    m >>= g = case m of
+                Nothing -> Nothing
+                Justx   -> g x
 
 
+    Maybe is the monad, and return brings a value into it by wrapping it with Just. 
+    As for (>>=) , it takes a m :: Maybe a value and a g :: a -> Maybe b function. 
+    If m is Nothing, there is nothing to do and the result is Nothing. 
+    Otherwise, in the Just x case, g is applied to x, the underlying value wrapped 
+    in Just, to give a Maybe b result. 
+    
+    Note that this result may or may not beNothing , depending on what g does to. 
+    
+    To sum it all up, if there is an underlying value of type a in m , we apply g to it, 
+    which brings the underlying value back into the Maybe monad.
 
+
+    - -------------------------
+    - Motivation: Maybe
+    - -------------------------
+    To see the usefulness of (>>=) and the Maybe monad, consider the following example: 
+    Imagine a family database that provides two functions:
+
+    father :: Person -> Maybe Person
+    mother :: Person -> Maybe Person
+
+    Let's combine our functions to query various grandparents. 
+    For instance, the following function looks up the maternal grandfather (the father of one's mother):
+
+    maternalGrandfather :: Person -> Maybe Person
+    maternalGrandfather p = case mother p of
+                                Nothing  -> Nothing
+                                Just mom -> father mom
+
+
+    Or consider a function that checks whether both grandfathers are in the database:
+
+    bothGrandfathers :: Person -> Maybe (Person, Person)
+    bothGrandfathers p =
+        case father p of
+            Nothing -> Nothing
+            Just dad ->
+                case father dad of
+                    Nothing -> Nothing
+                    Just gf1 ->                          -- found first grandfather
+                        case mother p of
+                            Nothing -> Nothing
+                            Just mom ->
+                                case father mom of
+                                    Nothing -> Nothing
+                                    Just gf2 ->          -- found second grandfather
+                                        Just (gf1, gf2)
+
+    Every single query might fail by returning Nothingand the whole function must fail 
+    with Nothing if that happens.
+
+    Clearly there has to be a better way to write that instead of repeating the case of
+    Nothing again and again! Indeed, that's what the Maybe monad is set out to do. 
+    With the help of lambda expressions and return , we can rewrite the two grandfathers
+    function as well:
+
+    bothGrandfathers' p =
+       father p >>=
+           (\dad -> father dad >>=
+               (\gf1 -> mother p >>=             -- gf1 is only used in the final return
+                   (\mom -> father mom >>=
+                       (\gf2 -> return (gf1,gf2) ))))
+
+
+    While these nested lambda expressions may look confusing to you, the thing to take away
+    here is that (>>=) releases us from listing all the Nothing s, shifting the focus back 
+    to the interesting part of the code.
+
+    To be a little more precise: The result of father p is a monadic value 
+    (in this case, either Just dad or Nothing , depending on whether p's father is in the database). 
+    As the father function takes a regular (non-monadic value), the (>>=) feeds p's dad to it as a
+    non-monadic value. The result of father dad is then monadic again, and the process continues.
+
+    So, (>>=) helps us pass non-monadic values to functions without actually leaving a monad.
+    In the case of the Maybe monad, the monadic aspect is the qualifier that we don't know
+    with certainty whether the value will be found.
+
+    

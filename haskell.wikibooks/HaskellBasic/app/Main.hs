@@ -26,6 +26,7 @@ import Cap_27.Functor_class
 import Cap_29.PrologueIO_ApplicativeFunctor
 import Cap_29.PrologueIO_IO
 import Cap_29.Applicatives_tutorial
+import Cap_30.Monads
 
 
 
