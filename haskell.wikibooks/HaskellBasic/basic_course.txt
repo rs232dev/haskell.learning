@@ -703,5 +703,48 @@ otherwise.
     
     Therefore getLine having type String would cause referential transparency to be broken.
 
+    As getLine illustrates, there is a fundamental indeterminacy associated with I/O actions. 
+    
+    Respecting this indeterminacy is necessary for preserving referential transparency.
+    
+    In Haskell, that is achieved through the IO type constructor.
+
+    getLine being an IO String means that it is not any actual String, but both a placeholder 
+    for a String that will only materialise when the program is executed and a promise that 
+    this String will indeed be delivered (in the case of getLine, by slurping it from the terminal).
+
+    If mx is a Maybe Double, then fmap (2*) mx doubles the value if it is there, and works regardless 
+    of whether the value actually exists.
+    
+    Both Maybe a and IO a imply, for different reasons, a layer of indirection in reaching the 
+    corresponding values of type a. 
+
+    That being so, it comes as no surprise that, like Maybe, IO is a Functor, with fmap
+    being the most elementary way of getting across the indirection.
+
+    interactiveSumming :: IO()
+    interactiveSumming = do
+        putStrLn "Choose two numbers:"
+        mx <- readMaybe <$> getLine  -- equivalently: fmap readMaybe getLine
+        my <- readMaybe <$> getLine
+        case (+) <$> mx <*> my :: Maybe Double of
+            Just z  -> putStrLn ("The sum of your numbers is " ++ show z)
+            Nothing -> do
+                putStrLn "Invalid number. Retrying..."
+                interactiveSumming
 
     
+readMaybe <$> getLine can be read as "once getLine delivers a string, whatever it turns
+out to be, apply readMaybe on it". 
+
+
+-- fmap :: Functor f => (a -> b) -> f a -> f b
+-- getLine :: IO String
+-- readMaybe :: Read a => String -> Maybe a
+
+--          a    ->   b          f a 
+-- fmap ( String -> Maybe a) (IO String) -> (IO  String)
+
+
+
+
