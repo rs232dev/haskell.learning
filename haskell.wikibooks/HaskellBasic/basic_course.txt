@@ -29,6 +29,8 @@
   23) Cap_26.Classes_and_Types
   24) Cap_27.Functor_class
   25) Cap_29_PrologueIO_ApplicativeFunctor
+  26) Cap_29_PrologueIO_IO + Applicatives_tutorial
+  
 
 -- ---------------------------------------------------------------------------------------------- --
 --  1) Create VsCode project                                                                      -- 
@@ -745,6 +747,12 @@ out to be, apply readMaybe on it".
 --          a    ->   b          f a 
 -- fmap ( String -> Maybe a) (IO String) -> (IO  String)
 
+-- ---------------------------------------------------------------------------------------------- --
+-- 26) Cap_29_PrologueIO_IO + Applicatives_tutorial                                               --
+-- ---------------------------------------------------------------------------------------------- --
+
+        - <$>
+        - <*>
 
 
 
