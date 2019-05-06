@@ -30,6 +30,8 @@
   25) Cap_29.PrologueIO_ApplicativeFunctor
   26) Cap_29.PrologueIO_IO + Applicatives_tutorial
   27) Cap_30.Monads
+  28) Cap_31.MaybeMonad
+  29) Cap_32.ListMonad
 
 
 -- ---------------------------------------------------------------------------------------------- --
@@ -1115,6 +1117,115 @@ out to be, apply readMaybe on it".
 
     map f x = x >>= (return . f)
     join x  = x >>= id
+
+-- ---------------------------------------------------------------------------------------------- --
+--  28) Maybe Monad                                                                               -- 
+-- ---------------------------------------------------------------------------------------------- --
+
+
+    The Maybe monad represents computations which might "go wrong" by not returning a value. 
+    For reference, here are the definitions of return and (>>=) for Maybe as we saw in the 
+    last chapter: 
+    
+    return :: a -> Maybe a
+    return x = Just x
+
+    (>>=) :: Maybe a -> (a -> Maybe b) -> Maybe b
+    (>>=) m g = case m of
+                    Nothing -> Nothing
+                    Just x -> g x
+
+
+
+
+
+    - ----------------------------
+    - Safe functions
+    - ----------------------------
+
+    The Maybe datatype provides a way to make a safety wrapper around partial functions,
+    that is, functions which can fail to work for a range of arguments. 
+    
+    For example, head and tail only work with non-empty lists. 
+    
+    Another typical case, which we will explore in this section, are mathematical functions
+    like sqrt and log; (as far as real numbers are concerned) these are only defined for 
+    non-negative arguments.
+
+
+    > log 1000
+    6.907755278982137
+
+    > log (-1000)
+    ''ERROR'' -- runtime error
+
+    To avoid this crash, a ”safe” implementation of log could be:
+
+    safeLog :: (Floating a, Ord a) => a -> Maybe a
+    safeLog x
+        | x > 0 = Just (log x)
+        | otherwise = Nothing
+    
+    > safeLog 1000
+    Just 6.907755278982137
+
+    > safeLog -1000
+    Nothing
+
+
+-- ---------------------------------------------------------------------------------------------- --
+--  29) List Monad                                                                                -- 
+-- ---------------------------------------------------------------------------------------------- --
+
+    As monads, lists are used to model nondeterministic computations which may return an arbitrary 
+    number of results. 
+
+    There is a certain parallel with how Maybe represented  computations which could return zero or 
+    one value; but with lists, we can return zero, one, or many values (the number of values being 
+    reflected in the length of the list).
+
+
+    - ----------------------------
+    - The Monad instance of lists
+    - ----------------------------
+
+    The return function for lists simply injects a value into a list:
+    
+        return x = [x]
+
+    The type of the list return is return :: a -> [a], or, equivalently, return :: a -> [] a. 
+    
+    The latter style of writing it makes it more obvious that we are replacing the generic type 
+    constructor in the signature of return (which we had called M in Understanding monads ) by 
+    the list type constructor [] (which is distinct from but easy to confuse with the empty list!).
+
+    The binding operator is less trivial. We will begin by considering its type, which for the
+    case of lists should be:
+
+    [a] -> (a -> [b]) -> [b]
+
+    The actual process here involves first mapping a given function over a given list to get back a 
+    list of lists, i.e. type [[b]] (of course, many functions which you might use in mapping do not 
+    return lists; but, as shown in the type signature above, monadic binding for lists only works 
+    with functions that return lists). To get back to a regular list, we then concatenate the elements 
+    of our list of lists to get a final result of type [b]. Thus, we can define the list version of (>>=):
+        
+        xs >>= f = concat (map f xs)
+
+    The bind operator is key to understanding how different monads do their jobs, as its definition specifies
+    the chaining strategy used when working with the monad.
+    
+    In the case of the list monad, the strategy allows us to model non-determinism: 
+    
+        an a -> [b] function
+
+    can be seen as a way of generating, from an input of type a, an unspecified number of
+    possible outputs of type b, without settling on any one of them in particular. 
+    
+    (>>=), from that perspective, does that for multiple inputs and combines all output 
+    possibilities in a single result list. 
+
+    
 
 
 

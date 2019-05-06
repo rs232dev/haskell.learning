@@ -28,7 +28,8 @@ import Cap_29.PrologueIO_IO
 import Cap_29.Applicatives_tutorial
 import Cap_30.Monads
 import Cap_30.TypeClass
-
+import Cap_31.MaybeMonad
+import Cap_32.ListMonad
 
 main :: IO ()
 main = do
