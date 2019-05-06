@@ -27,7 +27,7 @@ import Cap_29.PrologueIO_ApplicativeFunctor
 import Cap_29.PrologueIO_IO
 import Cap_29.Applicatives_tutorial
 import Cap_30.Monads
-
+import Cap_30.TypeClass
 
 
 main :: IO ()

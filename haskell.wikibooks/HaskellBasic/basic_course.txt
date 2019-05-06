@@ -1,5 +1,4 @@
 
-
 ** ********************************************************************************************** **
 **                                     Table of contents                                          **
 ** ********************************************************************************************** **
@@ -882,4 +881,253 @@ out to be, apply readMaybe on it".
     In the case of the Maybe monad, the monadic aspect is the qualifier that we don't know
     with certainty whether the value will be found.
 
+
+    - -------------------------
+    - Type Class
+    - -------------------------
+
+    In Haskell, the Monad type class is used to implement monads. 
+    It is provided by the Control.Monad module and included in the Prelude. 
     
+    The class has the following methods:
+    
+    class Applicative m => Monad m where
+        return :: a      -> m a
+        (>>=)  :: m a    -> (a -> m b) -> m b
+        (>>)   :: m a    -> m b -> m b
+        fail   :: String -> m a
+
+
+    Aside from return and bind, there are two additional methods, (>>) and fail. 
+    Both of them have default implementations, and so you don't need to provide 
+    them when writing an instance.
+
+    The operator (>>), spelled "then", is a mere convenience and has the default 
+    implementation:
+
+    m >> n = m >>= \_ -> n
+
+
+    (>>) sequences two monadic actions when the second action does not involve the
+    result of the first, which is a common scenario for monads such as IO.
+
+
+    printSomethingTwice :: String -> IO ()
+    printSomethingTwice str = putStrLn str >> putStrLn str
+
+    The function fail handles pattern match failures in do notation. 
+    It's an unfortunate technical necessity and doesn't really have 
+    anything to do with monads. 
+    You are advised not to call fail directly in your code!!
+
+
+    - -------------------------
+    - Monad and Applicative
+    - -------------------------
+
+    An important thing to note is that Applicative is a superclass of Monad. 
+    
+    * First of all, every Monad is also a Functor and an Applicative, and so fmap, 
+      pure, (<*>) can all be used with monads. 
+    
+    * Secondly, actually writing a Monad instance also requires providing Functor 
+      and Applicative instances. 
+      
+    * Thirdly, if you have worked through the Prologue, the types and roles of 
+      return and (>>) should look familiar.
+
+
+    (*>)   :: Applicative f => f a -> f b -> f b
+    (>>)   :: Monad m => m a -> m b -> m b
+    pure   :: Applicative f => a -> f a
+    return :: Monad m => a -> m a
+
+
+    The only difference between the types of (*>) and (>>) is that the constraint 
+    changes from Applicative to Monad. 
+    
+    In fact, that is the only difference between the methods: 
+    
+    if you are dealing with a Monad you can always replace (*>) and (>>), and vice-versa. 
+    The same goes for pure/return – in fact, it is not even necessary to implement return 
+    if there is an independent definition of pure in the Applicative instance, 
+    as return = pure is provided as a default definition of return.
+
+
+    - -------------------------
+    - Notions of Computation
+    - -------------------------
+
+    We have seen how (>>=) and return are very handy for removing boilerplate code that
+    crops up when using Maybe. That, however, is not enough to justify why monads matter 
+    so much. 
+    
+    Our next step towards that will be rewriting the two-grandfathers function in a quite
+    different-looking style: 
+    
+    Using do notation with explicit braces and semicolons. 
+    Depending on your experience with other programming languages, you may find this very suggestive:
+
+    bothGrandfathers p = do {
+        dad <- father p;
+        gf1 <- father dad;
+        mom <- mother p;
+        gf2 <- father mom;
+        return (gf1, gf2);
+    }
+
+
+    If this looks like a code snippet in an imperative programming language to you, that's
+    because it is. 
+    
+    In particular, this imperative language supports exceptions : father and mother are 
+    functions that might fail to produce results, raising an exception instead; and when that
+    happens, the whole do-block will fail, i.e. terminate with an exception (meaning,
+    evaluate to Nothing, here).
+
+    In other words, the expression father p, which has type Maybe Person, is interpreted as
+    a statement in an imperative language that returns a Person as the result, or fails.
+
+    This is true for all monads: a value of type M a is interpreted as a statement in an 
+    imperative language M that returns a value of type a as its result; and the semantics of 
+    this language are determined by the monad M.
+    
+    Under this interpretation, the then operator (>>) is simply an implementation of the
+    semicolon, and (>>=) of the semicolon and assignment (binding) of the result of a
+    previous computational step. 
+    
+
+    Different semantics of the imperative language correspond to different monads. 
+    The following table shows the classic selection that every Haskell programmer should know. 
+    If the idea behind monads is still unclear to you, studying each of the examples in the 
+    following chapters will not only give you a well-rounded toolbox but also help you understand
+    the common abstraction behind them.
+
+    ====================================================================================
+    |       Monad       |  Imperative Semantics                                        |
+    ====================================================================================
+    |       Maybe       |  Exception                                                   |
+     ----------------------------------------------------------------------------------
+    |       Error       |  Exception                                                   |
+     ----------------------------------------------------------------------------------
+    |       State       |  Global state                                                |
+     ----------------------------------------------------------------------------------
+    |       IO          |  Input/Output                                                |
+     ----------------------------------------------------------------------------------
+    |    [] (lists)     |  Nondeterminism                                              |
+     ----------------------------------------------------------------------------------
+    |       Reader      |  Environment                                                 |
+     ----------------------------------------------------------------------------------
+    |       Writer      |  Logger                                                      |
+     ----------------------------------------------------------------------------------
+
+
+    - -------------------------
+    - Monad Laws:
+    - -------------------------
+
+    In Haskell, every instance of the Monad type class (and thus all implementations of bind
+    (>>=) and return) must obey the following three laws:    
+
+
+    m >>= return    = m                         -- right unit
+    return x >>= f  = f x                       -- left unit
+    (m >>= f) >>= g = m >>= (\x -> f x >>= g)   -- associativity
+
+
+    * Return as neutral element    
+
+    The behavior of return is specified by the left and right unit laws. 
+    They state that return doesn't perform any computation, it just collects values. 
+    For instance:
+
+    maternalGrandfather p = do
+            mom <- mother p
+            gf <- father mom
+            return gf
+
+    is exactly the same as
+
+    maternalGrandfather p = do
+            mom <- mother p
+            father mom
+
+
+    * Associativity of bind
+
+
+    The law of associativity makes sure that (like the semicolon) the bind operator (>>=) 
+    only cares about the order of computations, not about their nesting; 
+    e.g. we could have written bothGrandfathers like this (compare with our earliest 
+    version without do):
+
+    bothGrandfathers p =
+        (father p >>= father) >>=
+            (\gf1 -> (mother p >>= father) >>=
+                (\gf2 -> return (gf1,gf2) ))
+
+
+    The associativity of the then operator (>>) is a special case:
+    
+    (m >> n) >> o = m >> (n >> o)
+
+
+    - ----------------------------
+    - Monads and Category Theory
+    - ----------------------------
+
+    The definition of monads in Category Theory actually uses a slightly different presentation. 
+    Translated into Haskell, this presentation gives an alternative yet equivalent definition of
+    a monad which can give us some additional insight.
+    
+    So far, we have defined monads in terms of (>>=) and return. 
+    
+    
+    The alternative definition, instead, treats monads as functors with two additional combinators:
+
+    fmap    :: (a -> b) -> M a -> M b   -- functor
+    return  :: a -> M a
+    join    :: M (M a) -> M a
+
+
+    For the purposes of this discussion, we will use the functors-as-containers metaphor discussed
+    in the chapter on the functor class. 
+    
+    According to it, a functor M can be thought of as container, so that M a "contains" values of 
+    type a, with a corresponding mapping function, i.e. fmap, that allows functions to be applied to 
+    values inside it.
+
+    Under this interpretation, the functions behave as follows:
+
+        * fmap applies a given function to every element in a container
+        * return packages an element into a container,
+        * join takes a container of containers and flattens it into a single container.
+
+
+     With these functions, the bind combinator can be defined as follows:
+
+
+        m >>= g = join (fmap g m)    
+
+
+    Likewise, we could give a definition of fmap and join in terms of (>>=) and return:
+
+
+    map f x = x >>= (return . f)
+    join x  = x >>= id
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
