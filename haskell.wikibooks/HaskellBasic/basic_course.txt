@@ -33,6 +33,7 @@
   28) Cap_31.MaybeMonad
   29) Cap_32.ListMonad
   30) Cap_32.ListComprehension
+  31) Cap_33.DoNotation
 
 
 -- ---------------------------------------------------------------------------------------------- --
@@ -1234,13 +1235,41 @@ out to be, apply readMaybe on it".
 --  30) Cap_32.ListComprehension                                                                  -- 
 -- ---------------------------------------------------------------------------------------------- --
 
+-- ---------------------------------------------------------------------------------------------- --
+--  31) Cap_33.DoNotation                                                                         -- 
+-- ---------------------------------------------------------------------------------------------- --
+
+    Using do blocks as an alternative monad syntax was first introduced way back in the Simple
+    input and output 1 chapter. There, we used do to sequence input/output operations, but
+    we hadn't introduced monads yet. Now, we can see that IO is yet another monad.
+
+    Since the following examples all involve IO, we will refer to the computations/monadic
+    values as actions (as we did in the earlier parts of the book).
+
+    The (>>) (then) operator works almost identically in do notation and in unsugared code.
+    For example, suppose we have a chain of actions like the following one:
+
+    putStr "Hello"  >>
+    putStr " "      >>
+    putStr "world!" >>
+    putStr "\n"
 
 
+    We can rewrite that in do notation as follows:
+
+    do  {   putStr "hello"
+        ;   putStr " "    
+        ;   putStr "world"
+        ;   putStr "\n"}
 
 
+    - -------------------------------
+    - Translating the bind operator
+    - -------------------------------
 
-
-
+    The bind operator (>>=) is a bit more difficult to translate from and to the do notation.
+(>>=) passes a value, namely the result of an action or function, downstream in the binding
+sequence. do notation assigns a variable name to the passed value using the <-.
 
 
 

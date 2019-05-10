@@ -31,11 +31,12 @@ import Cap_30.TypeClass
 import Cap_31.MaybeMonad
 import Cap_32.ListMonad
 import Cap_32.ListComprehension
+import Cap_33.DoNotation
+
 
 
 main :: IO ()
 main = do
-
     putStrLn "haskell basic course ";    
 
 
