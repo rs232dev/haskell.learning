@@ -12,4 +12,3 @@ module Cap_32.ListMonad where
 -- [3,4,5]
 
 
-

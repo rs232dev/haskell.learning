@@ -32,6 +32,7 @@
   27) Cap_30.Monads
   28) Cap_31.MaybeMonad
   29) Cap_32.ListMonad
+  30) Cap_32.ListComprehension
 
 
 -- ---------------------------------------------------------------------------------------------- --
@@ -1225,7 +1226,14 @@ out to be, apply readMaybe on it".
     (>>=), from that perspective, does that for multiple inputs and combines all output 
     possibilities in a single result list. 
 
-    
+    Main> [10,20,30] >>= \x -> [x, x+1] 
+    [10,11,20,21,30,31]  
+
+
+-- ---------------------------------------------------------------------------------------------- --
+--  30) Cap_32.ListComprehension                                                                  -- 
+-- ---------------------------------------------------------------------------------------------- --
+
 
 
 

@@ -30,6 +30,8 @@ import Cap_30.Monads
 import Cap_30.TypeClass
 import Cap_31.MaybeMonad
 import Cap_32.ListMonad
+import Cap_32.ListComprehension
+
 
 main :: IO ()
 main = do
