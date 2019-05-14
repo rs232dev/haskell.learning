@@ -29,4 +29,3 @@ nameDo = do putStr "What is your first name? "
             putStrLn ("Pleased to meet you, " ++ full ++ "!")
 
 
-            
