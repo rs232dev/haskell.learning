@@ -34,6 +34,7 @@
   29) Cap_32.ListMonad
   30) Cap_32.ListComprehension
   31) Cap_33.DoNotation
+  32) Cap_34.The_IOMonad
 
 
 -- ---------------------------------------------------------------------------------------------- --
@@ -1344,7 +1345,47 @@ out to be, apply readMaybe on it".
     For instance, Maybe has fail _ = Nothing; analogously, for the list monad fail _ = [].
 
 
-    
+-- ---------------------------------------------------------------------------------------------- --
+-- 32) Cap_34.The_IOMonad                                                                         -- 
+-- ---------------------------------------------------------------------------------------------- --
+
+Two defining features of Haskell are pure functions and lazy evaluation. 
+All Haskell functions are pure, which means that, when given the same arguments, they return 
+the same results.
+
+Lazy evaluation means that, by default, Haskell values are only evaluated when some part of
+the program requires them – perhaps never, if they are never used – and repeated evaluation
+of the same value is avoided wherever possible.
+
+Pure functions and lazy evaluation bring forth a number of advantages. 
+In particular, pure functions are reliable and predictable; they ease debugging and validation. 
+
+Test cases can also be set up easily since we can be sure that nothing other than the arguments will 
+influence a function's result. B
+
+eing entirely contained within the program, the Haskell compiler can evaluate functions thoroughly 
+in order to optimize the compiled code. However, input and output operations, which involve 
+interaction with the world outside the confines of the program, can't be expressed through pure functions. 
+
+Furthermore, in most cases I/O can't be done lazily. Since lazy computations are only performed when their 
+values become necessary, unfettered lazy I/O would make the order of execution of the real world effects
+unpredictable.
+
+There is no way to ignore this issue, as any useful program needs to do I/O, even if it is
+only to display a result. 
+
+That being so, how do we manage actions like opening a network connection, writing a file, 
+reading input from the outside world, or anything else that goes beyond calculating a value? 
+The main insight is: actions are not functions. 
+
+* The IO type constructor provides a way to represent actions as Haskell values, so that we can 
+  manipulate them with pure functions. In the Prologue 1 chapter, we anticipated some of the key 
+  features of this solution. 
+  Now that we also know that IO is a monad, we can wrap up the discussion we started there.
+
+
+
+  
 
 
 
